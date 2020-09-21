@@ -19,7 +19,7 @@ import {
 import MapViewDirections from "react-native-maps-directions";
 import { Icon, Input, Item } from "native-base";
 import Config from "./Config";
-
+import GOOGLE_MAPS_APIKEY from '../API_KEY'
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -27,7 +27,6 @@ const SCREEN_WIDTH = width;
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const GOOGLE_MAPS_APIKEY = "AIzaSyD-23HK9Pf0abE39PWf-APkqtn3VxrwTrQ";
 class Map extends Component {
   state = {
     region: {
