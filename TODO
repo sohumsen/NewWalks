@@ -1,2 +1,5 @@
 Format UI
 Maybe prevent route repititions
+keep track of distance travelled
+keep track of past routes
+error handling

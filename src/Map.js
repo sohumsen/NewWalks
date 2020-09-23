@@ -19,7 +19,7 @@ import {
 import MapViewDirections from "react-native-maps-directions";
 import { Icon, Input, Item } from "native-base";
 import Config from "./Config";
-import GOOGLE_MAPS_APIKEY from '../API_KEY'
+import GOOGLE_MAPS_APIKEY from "../API_KEY";
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -27,6 +27,7 @@ const SCREEN_WIDTH = width;
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const LOCATIONS_CHOSEN = 3;
 class Map extends Component {
   state = {
     region: {
@@ -125,35 +126,37 @@ class Map extends Component {
     //   ],
     //   status: "OK",
     // },
-    nearbyPlaces: null,
+    // allNearbyPlaces:null,
+    allNearbyPlaces: null,
+    chosenNearbyPlaces: null,
     coordsOfRoute: null,
+    waypoints:null
   };
-  // componentDidMount() {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       var lat = parseFloat(position.coords.latitude);
-  //       var long = parseFloat(position.coords.longitude);
 
-  //       var initialRegion = {
-  //         latitude: lat,
-  //         longitude: long,
-  //         latitudeDelta: LATITUDE_DELTA,
-  //         longitudeDelta: LONGITUDE_DELTA,
-  //       };
-  //       console.log(initialRegion);
-  //       this.setState({ region: initialRegion });
-  //     },
-  //     (error) => alert(JSON.stringify(error)),
-  //     { enableHighAccuracy: true, timeout: 20000 }
-  //   );
-  //   console.log("mounted");
-  // }
   componentDidMount() {
-    this.getNearbyPlaces();
+    this.getAllNearbyPlaces();
   }
-  getNearbyPlaces = () => {
-    console.log("pressed");
-      this.props.onSelectConfigButton()
+  getCurrentLoaction = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        var lat = parseFloat(position.coords.latitude);
+        var long = parseFloat(position.coords.longitude);
+
+        var initialRegion = {
+          latitude: lat,
+          longitude: long,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        };
+        console.log(initialRegion);
+        this.setState({ region: initialRegion });
+      },
+      (error) => alert(JSON.stringify(error)),
+      { enableHighAccuracy: true, timeout: 20000 }
+    );
+  };
+
+  getAllNearbyPlaces = () => {
     let queryParams =
       "location=" +
       this.state.region.latitude +
@@ -161,7 +164,8 @@ class Map extends Component {
       this.state.region.longitude +
       "&radius=" +
       this.state.radiusDistance +
-      "&opennow&key=AIzaSyD-23HK9Pf0abE39PWf-APkqtn3VxrwTrQ";
+      "&opennow&key=" +
+      GOOGLE_MAPS_APIKEY;
     console.log(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
         queryParams
@@ -182,19 +186,8 @@ class Map extends Component {
 
         // Examine the text in the response
         response.json().then((data) => {
-          var tempArrIdx = [];
-          let newdata = [];
-
-          while (tempArrIdx.length <= 3) {
-            var r = Math.floor(Math.random() * data.results.length);
-            if (tempArrIdx.indexOf(r) === -1) {
-              newdata.push(data.results[r]);
-              tempArrIdx.push(r);
-            }
-          }
-
-          this.setState({ nearbyPlaces: newdata }, () => {
-            console.log(this.state.nearbyPlaces);
+          this.setState({ allNearbyPlaces: data.results }, () => {
+            this.getChosenNearbyPlaces();
           });
         });
       })
@@ -202,86 +195,45 @@ class Map extends Component {
         console.log("bad");
       });
   };
-  handleRadiusDistanceChange = (text) => {
-    if (!isNaN(text)) {
-      this.setState({ radiusDistance: text });
-    }
-  };
+  getChosenNearbyPlaces = () => {
+    var tempArrIdx = [];
+    let newdata = [];
+    console.log("############################");
 
-  getWalkingRoute = () => {
-    let mode = "walking";
-    let origin = this.state.region.latitude + "," + this.state.region.longitude;
-    let destination =
-      this.state.region.latitude + "," + this.state.region.longitude;
-    const APIKEY = GOOGLE_MAPS_APIKEY;
-    let waypoints = this.state.nearbyPlaces.results.map((nearbyPlace) => {
-      return { location: nearbyPlace.place_id, stopover: false };
-    });
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${APIKEY}&mode=${mode}&waypoints=${waypoints}`; //&waypoints =${waypoints}
+    console.log(this.state.allNearbyPlaces);
+    console.log("############################");
 
-    console.log("###################################");
-
-    console.log(url);
-
-    //https://maps.googleapis.com/maps/api/directions/json?origin=51.30219236492249,-0.5825332310526248&destination=51.30219236492249,-0.5825332310526248&key=AIzaSyD-23HK9Pf0abE39PWf-APkqtn3VxrwTrQ&mode=walking&waypoints =ChIJ94aezArXdUgRbp7JNACo_Ng,ChIJQ1uz5p7XdUgRpfQbWm2me3o
-
-    //https://maps.googleapis.com/maps/api/directions/json?origin=51.30219236492249,-0.5825332310526248&destination=51.30219236492249,-0.5825332310526248&key=AIzaSyD-23HK9Pf0abE39PWf-APkqtn3VxrwTrQ&mode=walking&waypoints=ChIJ94aezArXdUgRbp7JNACo_Ng,ChIJQ1uz5p7XdUgRpfQbWm2me3o
-    fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson.routes.length !== 0) {
-          this.setState(
-            {
-              coordsOfRoute: this.decode(
-                responseJson.routes[0].overview_polyline.points
-              ), // definition below
-            },
-            () => {
-              console.log(this.state.coordsOfRoute);
-            }
-          );
-        } else {
-          console.log(responseJson);
+    if (this.state.allNearbyPlaces.length >= LOCATIONS_CHOSEN) {
+      while (tempArrIdx.length <= LOCATIONS_CHOSEN) {
+        var r = Math.floor(Math.random() * this.state.allNearbyPlaces.length);
+        if (tempArrIdx.indexOf(r) === -1) {
+          newdata.push(this.state.allNearbyPlaces[r]);
+          tempArrIdx.push(r);
         }
-      })
-      .catch((e) => {
-        console.log(e);
+      }
+      console.log("nearbyPlac");
+      let waypoints = newdata.map((nearbyPlace) => {
+        return {
+          latitude: nearbyPlace.geometry.location.lat,
+          longitude: nearbyPlace.geometry.location.lng,
+        };
       });
-  };
-  decode = (t, e) => {
-    for (
-      var n,
-        o,
-        u = 0,
-        l = 0,
-        r = 0,
-        d = [],
-        h = 0,
-        i = 0,
-        a = null,
-        c = Math.pow(10, e || 5);
-      u < t.length;
-
-    ) {
-      (a = null), (h = 0), (i = 0);
-      do (a = t.charCodeAt(u++) - 63), (i |= (31 & a) << h), (h += 5);
-      while (a >= 32);
-      (n = 1 & i ? ~(i >> 1) : i >> 1), (h = i = 0);
-      do (a = t.charCodeAt(u++) - 63), (i |= (31 & a) << h), (h += 5);
-      while (a >= 32);
-      (o = 1 & i ? ~(i >> 1) : i >> 1),
-        (l += n),
-        (r += o),
-        d.push([l / c, r / c]);
+      this.setState({ chosenNearbyPlaces: newdata,waypoints:waypoints }, () => {
+        console.log(this.state.chosenNearbyPlaces);
+      });
     }
-    return (d = d.map(function (t) {
-      return { latitude: t[0], longitude: t[1] };
-    }));
   };
+  handleRadiusDistanceChange = (text) => {
+    console.log(text);
+    this.setState({ radiusDistance: parseFloat(text) });
+  };
+
   render() {
     let waypoints = null;
-    if (this.state.nearbyPlaces !== null) {
-      waypoints = this.state.nearbyPlaces.map((nearbyPlace) => {
+    console.log(this.state.chosenNearbyPlaces);
+
+    if (this.state.chosenNearbyPlaces !== null) {
+      waypoints = this.state.chosenNearbyPlaces.map((nearbyPlace) => {
         return {
           latitude: nearbyPlace.geometry.location.lat,
           longitude: nearbyPlace.geometry.location.lng,
@@ -292,17 +244,27 @@ class Map extends Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View>
-          {this.props.selectConfig ? <Config radiusDistance={this.state.radiusDistance} getNearbyPlaces={this.getNearbyPlaces} handleRadiusDistanceChange={this.handleRadiusDistanceChange}/> : null}
+          {/* {this.props.selectConfig ? (
+            <Config
+              radiusDistance={this.state.radiusDistance}
+              getNearbyPlaces={this.getChosenNearbyPlaces}
+              handleRadiusDistanceChange={this.handleRadiusDistanceChange}
+            />
+          ) : null} */}
 
-          {this.state.nearbyPlaces !== null ? (
+          {this.state.allNearbyPlaces !== null &&
+          this.state.chosenNearbyPlaces !== null? (
             <MapView
               showsUserLocation
               followsUserLocation
               style={styles.mapStyle}
               provider={PROVIDER_GOOGLE}
               region={this.state.region}
+              //   onRegionChangeComplete ={region => {
+              //     this.setState({region:region});
+              // }}
             >
-              {this.state.nearbyPlaces.map((nearbyPlaces, i) => (
+              {this.state.chosenNearbyPlaces.map((nearbyPlaces, i) => (
                 <Marker
                   key={i}
                   coordinate={{
@@ -326,7 +288,7 @@ class Map extends Component {
                   latitude: this.state.region.latitude,
                   longitude: this.state.region.longitude,
                 }}
-                waypoints={waypoints}
+                waypoints={this.state.waypoints}
               />
 
               <Circle
