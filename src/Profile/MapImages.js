@@ -18,11 +18,14 @@ import {
 import MapImage from "./MapImage";
 export default class CardImageExample extends Component {
   render() {
+    console.log(this.props)
     return (
         <Content>
         <List>
-            <MapImage/>
-            <MapImage/>
+          {this.props.mapData.map(mapObj=>{
+            return <MapImage mapObj={mapObj} key={Object.keys(mapObj)[0]}/>
+          })}
+            
 
           </List>
         </Content>

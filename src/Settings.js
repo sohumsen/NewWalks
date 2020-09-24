@@ -19,41 +19,35 @@ export default class ListIconExample extends Component {
     showNavigate: false,
   };
   render() {
+    console.log("settings");
     return (
-      <Container>
-        <Header>
+      <Content>
+        <ListItem icon>
+          <Left>
+            <Button
+              style={{ backgroundColor: "#AAAAAA" }}
+              onPress={() => {
+                this.setState({ showNavigate: !this.state.showNavigate });
+              }}
+            >
+              <Icon active name="navigate" />
+            </Button>
+          </Left>
           <Body>
-            <Title>Settings</Title>
+            <Text>Navigate</Text>
           </Body>
-        </Header>
-        <Content>
-          <ListItem icon>
-            <Left>
-              <Button
-                style={{ backgroundColor: "#AAAAAA" }}
-                onPress={() => {
-                  this.setState({ showNavigate: !this.state.showNavigate });
-                }}
-              >
-                <Icon active name="navigate" />
-              </Button>
-            </Left>
-            <Body>
-              <Text>Navigate</Text>
-            </Body>
-            <Right>
-              <Icon active name="arrow-forward" />
-            </Right>
-          </ListItem>
-          {this.state.showNavigate ? (
-            <Config
-              getAllNearbyPlaces={this.props.getAllNearbyPlaces}
-              radiusDistance={this.props.radiusDistance}
-              handleRadiusDistanceChange={this.props.handleRadiusDistanceChange}
-            />
-          ) : null}
-        </Content>
-      </Container>
+          <Right>
+            <Icon active name="arrow-forward" />
+          </Right>
+        </ListItem>
+        {this.state.showNavigate ? (
+          <Config
+            getAllNearbyPlaces={this.props.getAllNearbyPlaces}
+            radiusDistance={this.props.radiusDistance}
+            handleRadiusDistanceChange={this.props.handleRadiusDistanceChange}
+          />
+        ) : null}
+      </Content>
     );
   }
 }

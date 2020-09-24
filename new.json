@@ -1,0 +1,86 @@
+
+[
+    {
+      business_status: "OPERATIONAL",
+      geometry: {
+        location: {
+          lat: 51.305243,
+          lng: -0.5788289,
+        },
+        viewport: {
+          northeast: {
+            lat: 51.30654978029149,
+            lng: -0.577301319708498,
+          },
+          southwest: {
+            lat: 51.30385181970849,
+            lng: -0.5799992802915021,
+          },
+        },
+      },
+      icon:
+        "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+      name: "Greys",
+      opening_hours: {
+        open_now: true,
+      },
+      place_id: "ChIJ94aezArXdUgRbp7JNACo_Ng",
+      plus_code: {
+        compound_code: "8C4C+3F Woking, UK",
+        global_code: "9C3X8C4C+3F",
+      },
+      rating: 4.5,
+      reference: "ChIJ94aezArXdUgRbp7JNACo_Ng",
+      scope: "GOOGLE",
+      types: ["health", "point_of_interest", "establishment"],
+      user_ratings_total: 2,
+      vicinity: "Hook Heath Road, Woking",
+    },
+    {
+      business_status: "OPERATIONAL",
+      geometry: {
+        location: {
+          lat: 51.307417,
+          lng: -0.582268,
+        },
+        viewport: {
+          northeast: {
+            lat: 51.30874023029151,
+            lng: -0.580889119708498,
+          },
+          southwest: {
+            lat: 51.30604226970851,
+            lng: -0.5835870802915021,
+          },
+        },
+      },
+      icon:
+        "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png",
+      name: "Ryan Roofing",
+      opening_hours: {
+        open_now: true,
+      },
+      photos: [
+        {
+          height: 2448,
+          html_attributions: [
+            '<a href="https://maps.google.com/maps/contrib/104707017742871780021">Ryan Roofing</a>',
+          ],
+          photo_reference:
+            "CmRaAAAAtQzcupgp8uuNLUSfTvP6doQGWZUKHuj7MktDDYRzczaTkOGkK6tZNNfgJ6z7TD6llvcVuhL9ZWb7hPO3PNgnvqgB9o04UaEEjIhTv4nr_KNBTYr81jM2-I5ZWIcIuASEEhARnxJ4JAO8ZxOosP1P40tXGhRWdgalO6A8zVID__co2mrL6B_0yw",
+          width: 3264,
+        },
+      ],
+      place_id: "ChIJQ1uz5p7XdUgRpfQbWm2me3o",
+      plus_code: {
+        compound_code: "8C49+X3 Woking, UK",
+        global_code: "9C3X8C49+X3",
+      },
+      rating: 4,
+      reference: "ChIJQ1uz5p7XdUgRpfQbWm2me3o",
+      scope: "GOOGLE",
+      types: ["roofing_contractor", "point_of_interest", "establishment"],
+      user_ratings_total: 4,
+      vicinity: "Bengairn, Mile Path, Hook Heath,, Woking",
+    }
+  ]

@@ -17,7 +17,7 @@ import {
   Icon,
 } from "native-base";
 import MapView, { PROVIDER_GOOGLE, UrlTile } from "react-native-maps";
-import Tile from '../Tile'
+import Tile from "../Tile";
 
 export default class CardImageExample extends Component {
   render() {
@@ -32,19 +32,23 @@ export default class CardImageExample extends Component {
               }}
             />
             <Body>
-              {/* <Text>{this.props.dateTime}</Text>
-              <Text note>{this.props.rating}</Text> */}
+              <Text>{Object.keys(this.props.mapObj)[0]}</Text>
             </Body>
           </Left>
         </CardItem>
         <CardItem cardBody>
-
-          <Tile waypoints={this.props.waypoints}/>
+          <Tile mapObj={this.props.mapObj} key={this.props.key} />
         </CardItem>
         <CardItem>
           <Left>
             <Button transparent>
-              <Text>Date</Text>
+              <Text>
+                {this.props.mapObj[Object.keys(this.props.mapObj)[0]][
+                  "chosenNearbyPlaces"
+                ]
+                  .map((place) => place.name)
+                  .join()}
+              </Text>
             </Button>
           </Left>
           <Body>

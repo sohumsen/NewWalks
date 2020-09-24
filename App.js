@@ -7,7 +7,7 @@ import Layout from "./src/Layout";
 import Map from "./src/Map";
 import Settings from "./src/Settings";
 import Profile from "./src/Profile/Profile";
- 
+
 import Constants from "expo-constants";
 
 export default class App extends React.Component {
@@ -54,16 +54,13 @@ export default class App extends React.Component {
           ) : null}
           {this.state.selectedFooterTab === "Settings" ? (
             <Settings
-              // getAllNearbyPlaces={this.getAllNearbyPlaces}
-              // radiusDistance={this.props.radiusDistance}
-              // handleRadiusDistanceChange={this.handleRadiusDistanceChange}
+            // getAllNearbyPlaces={this.getAllNearbyPlaces}
+            // radiusDistance={this.props.radiusDistance}
+            // handleRadiusDistanceChange={this.handleRadiusDistanceChange}
             />
           ) : null}
           {this.state.selectedFooterTab === "Profile" ? (
-            <Profile
-            deviceId={this.state.deviceId}
-             
-            />
+            <Profile deviceId={this.state.deviceId} />
           ) : null}
         </Layout>
       </Container>
