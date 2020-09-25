@@ -6,7 +6,7 @@ import Slider from "@react-native-community/slider";
 export default class Config extends Component {
   render() {
     return (
-      <View style={styles.container}>
+      <Container>
         {/* <Slider
           style={{ width: 200}}
           value={this.props.radiusDistance}
@@ -17,7 +17,7 @@ export default class Config extends Component {
           maximumTrackTintColor="#000000"
         /> */}
         <TextInput
-          style={styles.textBox}
+          // style={styles.textBox}
           keyboardType="numeric"
           onChangeText={(text) => this.props.handleRadiusDistanceChange(text)}
           value={this.props.radiusDistance}
@@ -26,9 +26,12 @@ export default class Config extends Component {
         <Button
           style={styles.button}
           title="Submit"
-          onPress={() => this.props.getNearbyPlaces()}
+          onPress={() => {
+            this.props.getAllNearbyPlaces();
+            this.props.handleChangeFooterTab("Map");
+          }}
         />
-      </View>
+      </Container>
     );
   }
 }

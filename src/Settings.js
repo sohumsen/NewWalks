@@ -22,14 +22,14 @@ export default class ListIconExample extends Component {
     console.log("settings");
     return (
       <Content>
-        <ListItem icon>
+        <ListItem
+          icon
+          onPress={() => {
+            this.setState({ showNavigate: !this.state.showNavigate });
+          }}
+        >
           <Left>
-            <Button
-              style={{ backgroundColor: "#AAAAAA" }}
-              onPress={() => {
-                this.setState({ showNavigate: !this.state.showNavigate });
-              }}
-            >
+            <Button>
               <Icon active name="navigate" />
             </Button>
           </Left>
@@ -37,14 +37,17 @@ export default class ListIconExample extends Component {
             <Text>Navigate</Text>
           </Body>
           <Right>
-            <Icon active name="arrow-forward" />
+            <Icon active name="arrow-down" />
           </Right>
         </ListItem>
+
         {this.state.showNavigate ? (
           <Config
             getAllNearbyPlaces={this.props.getAllNearbyPlaces}
             radiusDistance={this.props.radiusDistance}
             handleRadiusDistanceChange={this.props.handleRadiusDistanceChange}
+            handleChangeFooterTab={this.props.handleChangeFooterTab}
+
           />
         ) : null}
       </Content>

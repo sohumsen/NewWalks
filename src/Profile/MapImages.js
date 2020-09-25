@@ -1,34 +1,39 @@
 import React, { Component } from "react";
-import { Image } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Thumbnail,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  List,
-} from "native-base";
+import { AsyncStorage, Image } from "react-native";
+import { List } from "native-base";
 import MapImage from "./MapImage";
+import { Card, CardItem, Body, Text, Content } from "native-base";
+
 export default class CardImageExample extends Component {
   render() {
-    console.log(this.props)
     return (
-        <Content>
+      <Content>
         <List>
-          {this.props.mapData.map(mapObj=>{
-            return <MapImage mapObj={mapObj} key={Object.keys(mapObj)[0]}/>
-          })}
-            
-
-          </List>
-        </Content>
+          {this.props.mapData.length !== 0 ? (
+            this.props.mapData.map((mapObj, i) => {
+              return (
+                <MapImage
+                  key={i}
+                  mapObj={mapObj}
+                  removeData={this.props.removeData}
+                  replayMap={this.props.replayMap}
+                />
+              );
+            })
+          ) : (
+            <Card>
+              <CardItem>
+                <Body>
+                  <Text>
+                    Oops, you dont have any maps saved. Try saving one from the
+                    Navigate tab
+                  </Text>
+                </Body>
+              </CardItem>
+            </Card>
+          )}
+        </List>
+      </Content>
     );
   }
 }

@@ -27,46 +27,57 @@ export default class Profile extends Component {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const result = await AsyncStorage.multiGet(keys);
-      console.log(result);
 
       let data = result.map((req) => {
         return { [req[0]]: JSON.parse(req[1]) };
       });
-      console.log(data);
       this.setState({ mapData: data });
     } catch (error) {
       console.error(error);
     }
   };
 
-  // getAllData=()=>{
-  //   AsyncStorage.getAllKeys((err, keys) => {
-  //     AsyncStorage.multiGet(keys, (err, stores) => {
-  //       stores.map((result, i, store) => {
-  //         // get at each store's key/value so you can work with it
-  //         let key = store[i][0];
-  //         let value = store[i][1];
-  //         console.log(result,i,store,key,value)
-  //       });
-  //     });
-  //   });
-  // }
+  removeMap = async (key) => {
+    try {
+      const value = await AsyncStorage.removeItem(key);
+      let mapData = [...this.state.mapData];
+      let idx = mapData.findIndex((e) => {
+        return Object.keys(e)[0] === key;
+      });
+      mapData.splice(idx, 1);
+
+      // let mapData=this.state.mapData.filter(mapObj=>mapObj.)
+      // console.log(this.state.mapData)
+      // delete this.state.mapData[key]
+      this.setState({ mapData: mapData });
+      if (value !== null) {
+        // We have data!!
+      }
+    } catch (error) {
+      console.log(error);
+
+      // Error retrieving data
+    }
+  };
+  replayMap = (key) => {
+    console.log("replay")
+    let mapData = [...this.state.mapData];
+    let idx = mapData.findIndex((e) => {
+      return Object.keys(e)[0] === key;
+    });
+
+    
+    this.props.setNewMap(mapData[idx][key])
+    this.props.handleChangeFooterTab("Map")
+  };
 
   render() {
-    console.log(this.props.deviceId);
     return (
-      <Container>
-        <Header>
-          <Body>
-            <Title>{this.props.deviceId}</Title>
-          </Body>
-        </Header>
-        <Content>
-          {this.state.mapData !== null ? (
-            <MapImages mapData={this.state.mapData} />
-          ) : null}
-        </Content>
-      </Container>
+      <Content>
+        {this.state.mapData !== null ? (
+          <MapImages mapData={this.state.mapData} removeData={this.removeMap} replayMap={this.replayMap}/>
+        ) : null}
+      </Content>
     );
   }
 }

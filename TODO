@@ -1,5 +1,16 @@
 Format UI
-Maybe prevent route repititions
+make one request on first ever load perhaps
+add splash screen
+add distance change setting
+add use time setting
+
+api
+===
+search by time (wont be a perfect circle)
+find a daytrip
 keep track of distance travelled
-keep current map saved when going to new tab
+image is not accurate
+make a directions request
+Maybe prevent route repititions
+navigation api
 error handling

@@ -1,6 +1,6 @@
 import { View, Text } from "native-base";
 import { Image } from "react-native";
-import API_KEY from "../API_KEY";
+import API_KEY from "../../API_KEY";
 import React, { Component } from "react";
 export default class Tile extends Component {
   state = {
@@ -12,19 +12,12 @@ export default class Tile extends Component {
 
   getImagePath = () => {
     let waypoints = this.props.mapObj; // [{lat:"",long:""}]
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@");
-
-    console.log(
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].chosenNearbyPlaces
-    );
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@");
-
+  
     let waypointsStr = this.props.mapObj[
       Object.keys(this.props.mapObj)[0]
     ].chosenNearbyPlaces
       .map((waypoint) => waypoint.lat + "," + waypoint.lng)
       .join("|");
-    console.log(waypointsStr);
 
     let queryParams =
       "&path=" + waypointsStr + "&key=" + API_KEY + "&sensor=true";

@@ -19,9 +19,7 @@ export default class AnatomyExample extends Component {
       <Container>
         <Header>
           <Left>
-            <Button transparent onPress={this.props.onSelectConfigButton}>
-              <Icon name="settings" />
-            </Button>
+          
           </Left>
           <Body>
             <Title>Where do i go</Title>

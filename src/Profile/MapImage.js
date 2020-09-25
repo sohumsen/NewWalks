@@ -17,7 +17,7 @@ import {
   Icon,
 } from "native-base";
 import MapView, { PROVIDER_GOOGLE, UrlTile } from "react-native-maps";
-import Tile from "../Tile";
+import Tile from "./Tile";
 
 export default class CardImageExample extends Component {
   render() {
@@ -37,27 +37,39 @@ export default class CardImageExample extends Component {
           </Left>
         </CardItem>
         <CardItem cardBody>
-          <Tile mapObj={this.props.mapObj} key={this.props.key} />
+          <Tile mapObj={this.props.mapObj} />
         </CardItem>
         <CardItem>
           <Left>
+            <Button
+              transparent
+              onPress={() =>
+                this.props.removeData(Object.keys(this.props.mapObj)[0])
+              }
+            >
+              <Icon name="trash" />
+            </Button>
+          </Left>
+          <Body>
             <Button transparent>
               <Text>
                 {this.props.mapObj[Object.keys(this.props.mapObj)[0]][
                   "chosenNearbyPlaces"
                 ]
                   .map((place) => place.name)
-                  .join()}
+                  .join("->")}
               </Text>
-            </Button>
-          </Left>
-          <Body>
-            <Button transparent>
-              <Text>Distance</Text>
             </Button>
           </Body>
           <Right>
-            <Icon name="star" style={{ color: "yellow" }} />
+            <Button
+              transparent
+              onPress={() =>
+                this.props.replayMap(Object.keys(this.props.mapObj)[0])
+              }
+            >
+              <Icon name="redo" style={{ color: "blue" }} />
+            </Button>
           </Right>
         </CardItem>
       </Card>
