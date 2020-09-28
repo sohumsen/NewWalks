@@ -3,10 +3,9 @@ make one request on first ever load perhaps
 add splash screen
 add distance change setting
 add use time setting
-
+finalise state
 api
 ===
-search by time (wont be a perfect circle)
 find a daytrip
 keep track of distance travelled
 image is not accurate

@@ -15,7 +15,15 @@ import { createSwitchNavigator, StackNavigator } from "react-navigation";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import GOOGLE_MAPS_APIKEY from "./API_KEY";
-
+import NewMap from "./src/newMap";
+import haversine from "haversine";
+import MapView, {
+  Marker,
+  AnimatedRegion,
+  Polyline,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
+import decode from "./src/utils/helper";
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -36,7 +44,6 @@ export default class App extends React.Component {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     },
-    radiusDistance: 1000,
     allNearbyPlaces: [
       {
         lat: 51.305243,
@@ -81,12 +88,28 @@ export default class App extends React.Component {
         name: "Someone Roofing",
       },
     ],
+    radiusDistance: 2000,
+
+    isoline: [],
+    transportMode: "pedestrian",
+    rangeType: "distance",
+
+    // userRouteCoordinates:[],
+    // userDistanceTravelled: 0,
+
+    // coordinate: new AnimatedRegion({
+    //   latitude: LATITUDE,
+    //   longitude: LONGITUDE
+    //  }),
+
+    //  prevLatLng: {},
   };
   async componentDidMount() {
     // this.getCurrentLocation()
     // this.getAllNearbyPlaces()
     // this.getChosenNearbyPlaces();
     this.getRecentMapFromDB();
+    this.getHERERequest();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -95,9 +118,62 @@ export default class App extends React.Component {
     });
     this.setState({ isReady: true });
   }
+
+  getHERERequest = () => {
+
+    let origin =
+      "&origin=" +
+      this.state.initialRegion.latitude +
+      "," +
+      this.state.initialRegion.longitude;
+    let transportMode = "transportMode=" + this.state.transportMode;
+    let distance =
+      "&range[type]=" +
+      this.state.rangeType +
+      "&range[values]=" +
+      this.state.radiusDistance;
+    fetch(
+      "https://isoline.router.hereapi.com/v8/isolines?" +
+        transportMode +
+        distance +
+        origin +
+        "&apiKey=nMr30cwufvwivVzg5hZkozfTavfHBeRAc-ktxTc04FU&legAttributes=shape"
+    )
+      .then((response) => {
+        if (response.status !== 200) {
+          console.log("bad");
+
+          alert(
+            "Looks like there was a problem. Status Code: " + response.status
+          );
+          return;
+        }
+
+        // Examine the text in the response
+        response.json().then((data) => {
+       
+          let isoline = decode(data.isolines[0].polygons[0].outer);
+          let isolineObj = isoline.map((line) => {
+            return {
+              latitude: line[0],
+              longitude: line[1],
+            };
+          });
+          this.setState({ isoline: isolineObj });
+          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@");
+        });
+      })
+      .catch((err) => {
+        console.log("bad");
+      });
+  };
   handleRadiusDistanceChange = (text) => {
     this.setState({ radiusDistance: text });
   };
+  handleSettingsChange=(name,value)=>{
+    console.log(name,value)
+    this.setState({[name]:value})
+  }
 
   getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -119,7 +195,6 @@ export default class App extends React.Component {
   };
 
   getAllNearbyPlaces = () => {
-    console.log(this.state.radiusDistance, typeof this.state.radiusDistance);
     let queryParams =
       "location=" +
       this.state.initialRegion.latitude +
@@ -174,7 +249,6 @@ export default class App extends React.Component {
           tempArrIdx.push(r);
         }
       }
-
 
       this.setState({ chosenNearbyPlaces: newdata });
     }
@@ -280,8 +354,51 @@ export default class App extends React.Component {
     });
   };
 
+  watchForLoactionChanges = () => {
+    this.watchID = navigator.geolocation.watchPosition(
+      (position) => {
+        const {
+          coordinate,
+          userRouteCoordinates,
+          userDistanceTravelled,
+        } = this.state;
+        const { latitude, longitude } = position.coords;
+
+        const newCoordinate = {
+          latitude,
+          longitude,
+        };
+        if (Platform.OS === "android") {
+          if (this.marker) {
+            this.marker._component.animateMarkerToCoordinate(
+              newCoordinate,
+              500
+            );
+          }
+        } else {
+          coordinate.timing(newCoordinate).start();
+        }
+        let ini;
+        this.setState({
+          latitude,
+          longitude,
+          userRouteCoordinates: userRouteCoordinates.concat([newCoordinate]),
+          userDistanceTravelled:
+            userDistanceTravelled + this.calcDistance(newCoordinate),
+          prevLatLng: newCoordinate,
+        });
+      },
+      (error) => console.log(error),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
+  calcDistance = (newLatLng) => {
+    const { prevLatLng } = this.state;
+    return haversine(prevLatLng, newLatLng) || 0;
+  };
+
   render() {
-    // var directions = new GDirections (); 
+    // var directions = new GDirections ();
 
     if (!this.state.isReady) {
       return <AppLoading />;
@@ -302,6 +419,7 @@ export default class App extends React.Component {
             </Stack.Navigator>
           </NavigationContainer> */}
           {this.state.selectedFooterTab === "Map" ? (
+            // <NewMap/>
             <Map
               initialRegion={this.state.initialRegion}
               radiusDistance={this.state.radiusDistance}
@@ -309,6 +427,7 @@ export default class App extends React.Component {
               chosenNearbyPlaces={this.state.chosenNearbyPlaces}
               getChosenNearbyPlaces={this.getChosenNearbyPlaces}
               saveMap={this.saveMap}
+              isoline={this.state.isoline}
             />
           ) : null}
           {this.state.selectedFooterTab === "Settings" ? (
@@ -317,6 +436,9 @@ export default class App extends React.Component {
               getAllNearbyPlaces={this.getAllNearbyPlaces}
               radiusDistance={this.state.radiusDistance}
               handleChangeFooterTab={this.handleChangeFooterTab}
+              rangeType={this.state.rangeType}
+              handleSettingsChange={this.handleSettingsChange}
+              transportMode={this.state.transportMode}
             />
           ) : null}
           {this.state.selectedFooterTab === "Profile" ? (

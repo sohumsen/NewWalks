@@ -17,7 +17,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "loadJSInBackgroundExperimental": true,
+
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "App would like to access your current location to determine",
+        "NSLocationAlwaysUsageDescription": "App would like to access your current location",
+        "NSCameraUsageDescription": "App would like to access your Camera"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -12,18 +12,29 @@ export default class Tile extends Component {
 
   getImagePath = () => {
     let waypoints = this.props.mapObj; // [{lat:"",long:""}]
-  
-    let waypointsStr = this.props.mapObj[
-      Object.keys(this.props.mapObj)[0]
-    ].chosenNearbyPlaces
-      .map((waypoint) => waypoint.lat + "," + waypoint.lng)
-      .join("|");
 
+    let waypointsStr =
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
+        .latitude +
+      "," +
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
+        .longitude +
+      "|" +
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].chosenNearbyPlaces
+        .map((waypoint) => waypoint.lat + "," + waypoint.lng)
+        .join("|") +
+      "|" +
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
+        .latitude +
+      "," +
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
+        .longitude;
+   
     let queryParams =
       "&path=" + waypointsStr + "&key=" + API_KEY + "&sensor=true";
 
     fetch(
-      "http://maps.googleapis.com/maps/api/staticmap?size=400x200"+queryParams
+      "http://maps.googleapis.com/maps/api/staticmap?size=400x200" + queryParams
     )
       .then((response) => response.blob())
       .then((images) => {

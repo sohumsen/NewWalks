@@ -34,7 +34,7 @@ class Map extends Component {
             <MapView
               showsUserLocation
               followsUserLocation
-              onUserLocationChange={event => console.log(event.nativeEvent)}
+              // onUserLocationChange={event => console.log(event.nativeEvent)}
 
               style={styles.mapStyle}
               provider={PROVIDER_GOOGLE}
@@ -50,6 +50,12 @@ class Map extends Component {
                   title={nearbyPlaces.name}
                 />
               ))}
+              <Polyline
+                coordinates={this.props.isoline}
+                strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                strokeColors={["#B24112"]}
+                strokeWidth={3}
+              />
 
               <MapViewDirections
                 apikey={GOOGLE_MAPS_APIKEY}

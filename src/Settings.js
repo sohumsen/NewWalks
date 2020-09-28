@@ -14,12 +14,12 @@ import {
   Title,
 } from "native-base";
 import Config from "./Config";
+import Picker from "./UI/Picker";
 export default class ListIconExample extends Component {
   state = {
     showNavigate: false,
   };
   render() {
-    console.log("settings");
     return (
       <Content>
         <ListItem
@@ -40,16 +40,23 @@ export default class ListIconExample extends Component {
             <Icon active name="arrow-down" />
           </Right>
         </ListItem>
-
         {this.state.showNavigate ? (
+          <Picker
+            transportMode={this.props.transportMode}
+            rangeType={this.props.rangeType}
+            handleSettingsChange={this.props.handleSettingsChange}
+            radiusDistance={this.props.radiusDistance}
+          />
+        ) : null}
+
+        {/* {this.state.showNavigate ? (
           <Config
             getAllNearbyPlaces={this.props.getAllNearbyPlaces}
             radiusDistance={this.props.radiusDistance}
             handleRadiusDistanceChange={this.props.handleRadiusDistanceChange}
             handleChangeFooterTab={this.props.handleChangeFooterTab}
-
           />
-        ) : null}
+        ) : null} */}
       </Content>
     );
   }
