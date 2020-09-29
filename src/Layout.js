@@ -22,7 +22,7 @@ export default class AnatomyExample extends Component {
           
           </Left>
           <Body>
-            <Title>Where do i go</Title>
+            <Title>XPLORE</Title>
           </Body>
           <Right />
         </Header>

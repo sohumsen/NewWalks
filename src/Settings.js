@@ -44,16 +44,18 @@ export default class ListIconExample extends Component {
           <Picker
             transportMode={this.props.transportMode}
             rangeType={this.props.rangeType}
-            handleSettingsChange={this.props.handleSettingsChange}
-            radiusDistance={this.props.radiusDistance}
+            radiusMagnitude={this.props.radiusMagnitude}
+
+            handleSettingsInputChange={this.props.handleSettingsInputChange}
+            submitSettings={this.props.submitSettings}
           />
         ) : null}
 
         {/* {this.state.showNavigate ? (
           <Config
             getAllNearbyPlaces={this.props.getAllNearbyPlaces}
-            radiusDistance={this.props.radiusDistance}
-            handleRadiusDistanceChange={this.props.handleRadiusDistanceChange}
+            radiusMagnitude={this.props.radiusMagnitude}
+            handleradiusMagnitudeChange={this.props.handleradiusMagnitudeChange}
             handleChangeFooterTab={this.props.handleChangeFooterTab}
           />
         ) : null} */}

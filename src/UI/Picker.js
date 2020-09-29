@@ -14,6 +14,7 @@ import {
 
 export default class PickerWithIcon extends Component {
   render() {
+      console.log(this.props.radiusMagnitude)
 
     return (
       <Container>
@@ -26,10 +27,10 @@ export default class PickerWithIcon extends Component {
                 iosIcon={<Icon name="arrow-down" />}
                 selectedValue={this.props.rangeType}
                 onValueChange={(val) =>
-                  this.props.handleSettingsChange("rangeType", val)
+                  this.props.handleSettingsInputChange("rangeType", val)
                 }
               >
-                <Picker.Item label="Time (min)" value="time" />
+                <Picker.Item label="Time (s)" value="time" />
                 <Picker.Item label="Distance (m)" value="distance" />
               </Picker>
 
@@ -39,7 +40,7 @@ export default class PickerWithIcon extends Component {
                 iosIcon={<Icon name="arrow-down" />}
                 selectedValue={this.props.transportMode}
                 onValueChange={(val) =>
-                  this.props.handleSettingsChange("transportMode", val)
+                  this.props.handleSettingsInputChange("transportMode", val)
                 }
               >
                 <Picker.Item label="Walking" value="pedestrian" />
@@ -50,17 +51,15 @@ export default class PickerWithIcon extends Component {
             <Item regular>
               <Input
                 keyboardType="numeric"
-                value={this.props.radiusDistance}
-                placeholder={
-                  this.props.rangeType + " via " + this.props.transportMode
-                }
+                value={this.props.radiusMagnitude.toString()}
+
                 onChangeText={(val) =>
-                  this.props.handleSettingsChange("radiusDistance", val)
+                  this.props.handleSettingsInputChange("radiusMagnitude", val)
                 }
               />
             </Item>
             <Item regular>
-              <Button  >
+              <Button onPress={()=>{this.props.submitSettings()}}>
                 <Text>Submit</Text>
                 <Icon name="arrow-forward" />
               </Button>

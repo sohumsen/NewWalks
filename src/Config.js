@@ -9,8 +9,8 @@ export default class Config extends Component {
       <Container>
         {/* <Slider
           style={{ width: 200}}
-          value={this.props.radiusDistance}
-          onValueChange={(text) => this.props.handleRadiusDistanceChange(text)}
+          value={this.props.radiusMagnitude}
+          onValueChange={(text) => this.props.handleradiusMagnitudeChange(text)}
           minimumValue={0}
           maximumValue={3000}
           minimumTrackTintColor="#FFFFFF"
@@ -19,8 +19,8 @@ export default class Config extends Component {
         <TextInput
           // style={styles.textBox}
           keyboardType="numeric"
-          onChangeText={(text) => this.props.handleRadiusDistanceChange(text)}
-          value={this.props.radiusDistance}
+          onChangeText={(text) => this.props.handleradiusMagnitudeChange(text)}
+          value={this.props.radiusMagnitude}
           placeholder="Enter distance (m)"
         />
         <Button

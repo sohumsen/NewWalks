@@ -23,7 +23,7 @@ import MapView, {
   Polyline,
   PROVIDER_GOOGLE,
 } from "react-native-maps";
-import decode from "./src/utils/helper";
+import decode from "./src/utils/decoderHERE";
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -44,55 +44,62 @@ export default class App extends React.Component {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     },
-    allNearbyPlaces: [
-      {
-        lat: 51.305243,
-        lng: -0.5788289,
-        name: "Greys",
-      },
-      {
-        lat: 51.307417,
-        lng: -0.582268,
-        name: "Ryan Roofing",
-      },
-      {
-        lat: 51.306417,
-        lng: -0.582238,
-        name: "Sohum Roofing",
-      },
-      {
-        lat: 51.304417,
-        lng: -0.582248,
-        name: "Someone Roofing",
-      },
-      {
-        lat: 51.308417,
-        lng: -0.582278,
-        name: "Hi",
-      },
-    ],
-    chosenNearbyPlaces: [
-      {
-        lat: 51.305243,
-        lng: -0.5788289,
-        name: "Greys",
-      },
-      {
-        lat: 51.308417,
-        lng: -0.582278,
-        name: "Hi",
-      },
-      {
-        lat: 51.304417,
-        lng: -0.582248,
-        name: "Someone Roofing",
-      },
-    ],
-    radiusDistance: 2000,
+    // allNearbyPlaces: [
+    //   {
+    //     lat: 51.305243,
+    //     lng: -0.5788289,
+    //     name: "Greys",
+    //   },
+    //   {
+    //     lat: 51.307417,
+    //     lng: -0.582268,
+    //     name: "Ryan Roofing",
+    //   },
+    //   {
+    //     lat: 51.306417,
+    //     lng: -0.582238,
+    //     name: "Sohum Roofing",
+    //   },
+    //   {
+    //     lat: 51.304417,
+    //     lng: -0.582248,
+    //     name: "Someone Roofing",
+    //   },
+    //   {
+    //     lat: 51.308417,
+    //     lng: -0.582278,
+    //     name: "Hi",
+    //   },
+    // ],
+    // chosenNearbyPlaces: [
+    //   {
+    //     lat: 51.305243,
+    //     lng: -0.5788289,
+    //     name: "Greys",
+    //   },
+    //   {
+    //     lat: 51.308417,
+    //     lng: -0.582278,
+    //     name: "Hi",
+    //   },
+    //   {
+    //     lat: 51.304417,
+    //     lng: -0.582248,
+    //     name: "Someone Roofing",
+    //   },
+    // ],
 
-    isoline: [],
+    allNearbyPlaces: null,
+    chosenNearbyPlaces: null,
+
+    encodedIsoline: "",
+    decodedIsoline: [],
     transportMode: "pedestrian",
     rangeType: "distance",
+    radiusMagnitude: 2000,
+
+    
+
 
     // userRouteCoordinates:[],
     // userDistanceTravelled: 0,
@@ -109,7 +116,7 @@ export default class App extends React.Component {
     // this.getAllNearbyPlaces()
     // this.getChosenNearbyPlaces();
     this.getRecentMapFromDB();
-    this.getHERERequest();
+    this.getIsoline();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -119,8 +126,7 @@ export default class App extends React.Component {
     this.setState({ isReady: true });
   }
 
-  getHERERequest = () => {
-
+  getIsoline = () => {
     let origin =
       "&origin=" +
       this.state.initialRegion.latitude +
@@ -131,7 +137,7 @@ export default class App extends React.Component {
       "&range[type]=" +
       this.state.rangeType +
       "&range[values]=" +
-      this.state.radiusDistance;
+      this.state.radiusMagnitude;
     fetch(
       "https://isoline.router.hereapi.com/v8/isolines?" +
         transportMode +
@@ -151,7 +157,7 @@ export default class App extends React.Component {
 
         // Examine the text in the response
         response.json().then((data) => {
-       
+          this.setState({ encodedIsoline: data.isolines[0].polygons[0].outer });
           let isoline = decode(data.isolines[0].polygons[0].outer);
           let isolineObj = isoline.map((line) => {
             return {
@@ -159,7 +165,7 @@ export default class App extends React.Component {
               longitude: line[1],
             };
           });
-          this.setState({ isoline: isolineObj });
+          this.setState({ decodedIsoline  : isolineObj });
           console.log("@@@@@@@@@@@@@@@@@@@@@@@@@");
         });
       })
@@ -167,13 +173,11 @@ export default class App extends React.Component {
         console.log("bad");
       });
   };
-  handleRadiusDistanceChange = (text) => {
-    this.setState({ radiusDistance: text });
+
+  handleSettingsInputChange = (name, value) => {
+    console.log(name, value);
+    this.setState({ [name]: value });
   };
-  handleSettingsChange=(name,value)=>{
-    console.log(name,value)
-    this.setState({[name]:value})
-  }
 
   getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -201,7 +205,7 @@ export default class App extends React.Component {
       "," +
       this.state.initialRegion.longitude +
       "&radius=" +
-      this.state.radiusDistance +
+      this.state.radiusMagnitude +
       "&opennow&key=" +
       GOOGLE_MAPS_APIKEY;
 
@@ -264,7 +268,7 @@ export default class App extends React.Component {
       try {
         let mapObj = {
           initialRegion: this.state.initialRegion,
-          radiusDistance: this.state.radiusDistance,
+          radiusMagnitude: this.state.radiusMagnitude,
           allNearbyPlaces: this.state.allNearbyPlaces,
           chosenNearbyPlaces: this.state.chosenNearbyPlaces,
         };
@@ -330,7 +334,7 @@ export default class App extends React.Component {
           let newValue = JSON.parse(value);
           this.setState({
             initialRegion: newValue.initialRegion,
-            radiusDistance: newValue.radiusDistance,
+            radiusMagnitude: newValue.radiusMagnitude,
             allNearbyPlaces: newValue.allNearbyPlaces,
             chosenNearbyPlaces: newValue.chosenNearbyPlaces,
           });
@@ -348,7 +352,7 @@ export default class App extends React.Component {
   setNewMap = (mapObj) => {
     this.setState({
       initialRegion: mapObj.initialRegion,
-      radiusDistance: mapObj.radiusDistance,
+      radiusMagnitude: mapObj.radiusMagnitude,
       allNearbyPlaces: mapObj.allNearbyPlaces,
       chosenNearbyPlaces: mapObj.chosenNearbyPlaces,
     });
@@ -396,6 +400,12 @@ export default class App extends React.Component {
     const { prevLatLng } = this.state;
     return haversine(prevLatLng, newLatLng) || 0;
   };
+  submitSettings = () => {
+    console.log("submitted");
+    this.getAllNearbyPlaces();
+    this.handleChangeFooterTab("Map");
+    this.getIsoline();
+  };
 
   render() {
     // var directions = new GDirections ();
@@ -422,23 +432,21 @@ export default class App extends React.Component {
             // <NewMap/>
             <Map
               initialRegion={this.state.initialRegion}
-              radiusDistance={this.state.radiusDistance}
+              radiusMagnitude={this.state.radiusMagnitude}
               allNearbyPlaces={this.state.allNearbyPlaces}
               chosenNearbyPlaces={this.state.chosenNearbyPlaces}
               getChosenNearbyPlaces={this.getChosenNearbyPlaces}
               saveMap={this.saveMap}
-              isoline={this.state.isoline}
+              isoline={this.state.decodedIsoline}
             />
           ) : null}
           {this.state.selectedFooterTab === "Settings" ? (
             <Settings
-              handleRadiusDistanceChange={this.handleRadiusDistanceChange}
-              getAllNearbyPlaces={this.getAllNearbyPlaces}
-              radiusDistance={this.state.radiusDistance}
-              handleChangeFooterTab={this.handleChangeFooterTab}
+              radiusMagnitude={this.state.radiusMagnitude}
               rangeType={this.state.rangeType}
-              handleSettingsChange={this.handleSettingsChange}
               transportMode={this.state.transportMode}
+              handleSettingsInputChange={this.handleSettingsInputChange}
+              submitSettings={this.submitSettings}
             />
           ) : null}
           {this.state.selectedFooterTab === "Profile" ? (

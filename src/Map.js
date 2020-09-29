@@ -55,6 +55,9 @@ class Map extends Component {
                 strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
                 strokeColors={["#B24112"]}
                 strokeWidth={3}
+                fillColor= "green"
+              
+
               />
 
               <MapViewDirections
@@ -78,13 +81,13 @@ class Map extends Component {
                 })}
               />
 
-              <Circle
+              {/* <Circle
                 center={{
                   latitude: this.props.initialRegion.latitude,
                   longitude: this.props.initialRegion.longitude,
                 }}
-                radius={this.props.radiusDistance}
-              />
+                radius={this.props.radiusMagnitude}
+              /> */}
             </MapView>
 
             <TouchableOpacity style={styles.button}>
