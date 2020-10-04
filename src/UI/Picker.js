@@ -14,7 +14,6 @@ import {
 
 export default class PickerWithIcon extends Component {
   render() {
-      console.log(this.props.radiusMagnitude)
 
     return (
       <Container>

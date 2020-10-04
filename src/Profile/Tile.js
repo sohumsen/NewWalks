@@ -20,7 +20,7 @@ export default class Tile extends Component {
       this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
         .longitude +
       "|" +
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].chosenNearbyPlaces
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].nearbyPlaces.chosenNearbyPlaces
         .map((waypoint) => waypoint.lat + "," + waypoint.lng)
         .join("|") +
       "|" +

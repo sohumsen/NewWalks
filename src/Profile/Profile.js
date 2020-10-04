@@ -60,22 +60,23 @@ export default class Profile extends Component {
     }
   };
   replayMap = (key) => {
-    console.log("replay")
     let mapData = [...this.state.mapData];
     let idx = mapData.findIndex((e) => {
       return Object.keys(e)[0] === key;
     });
 
-    
-    this.props.setNewMap(mapData[idx][key])
-    this.props.handleChangeFooterTab("Map")
+    this.props.setNewMap(mapData[idx][key]);
   };
 
   render() {
     return (
       <Content>
         {this.state.mapData !== null ? (
-          <MapImages mapData={this.state.mapData} removeData={this.removeMap} replayMap={this.replayMap}/>
+          <MapImages
+            mapData={this.state.mapData}
+            removeData={this.removeMap}
+            replayMap={this.replayMap}
+          />
         ) : null}
       </Content>
     );

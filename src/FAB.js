@@ -10,11 +10,20 @@ export default class FABExample extends Component {
   render() {
     return (
       <View>
-        <Button style={{ backgroundColor: "#34A34F" }} onPress={()=>this.props.saveMap()}>
+        <Button onPress={() => this.props.saveMap()}>
           <Icon name="save" />
         </Button>
-        <Button onPress={()=>this.props.getChosenNearbyPlaces()}>
+        <Button
+          style={{ backgroundColor: "red" }}
+          onPress={() => this.props.getChosenNearbyPlaces()}
+        >
           <Icon name="create" />
+        </Button>
+        <Button
+          style={{ backgroundColor: "#34A34F" }}
+          onPress={() => this.props.watchForLocationChanges()}
+        >
+          <Icon name="ios-arrow-dropright" />
         </Button>
       </View>
     );

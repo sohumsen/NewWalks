@@ -21,6 +21,7 @@ import Tile from "./Tile";
 
 export default class CardImageExample extends Component {
   render() {
+    
     return (
       <Card>
         <CardItem>
@@ -54,6 +55,8 @@ export default class CardImageExample extends Component {
             <Button transparent>
               <Text>
                 {this.props.mapObj[Object.keys(this.props.mapObj)[0]][
+                  "nearbyPlaces"
+                ][
                   "chosenNearbyPlaces"
                 ]
                   .map((place) => place.name)

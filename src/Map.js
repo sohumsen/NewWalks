@@ -4,6 +4,7 @@ import MapView, {
   Marker,
   Circle,
   Polyline,
+  Polygon,
 } from "react-native-maps";
 import {
   StyleSheet,
@@ -25,8 +26,10 @@ import Fab from "./FAB";
 import { Container, Header } from "native-base";
 import { AsyncStorage } from "react-native";
 
+
 class Map extends Component {
   render() {
+  
     return (
       <View>
         {this.props.chosenNearbyPlaces !== null ? (
@@ -50,15 +53,21 @@ class Map extends Component {
                   title={nearbyPlaces.name}
                 />
               ))}
-              <Polyline
+              <Polygon
                 coordinates={this.props.isoline}
-                strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-                strokeColors={["#B24112"]}
-                strokeWidth={3}
-                fillColor= "green"
-              
-
+                strokeColor="blue" // fallback for when `strokeColors` is not supported by the map-provider
+                strokeWidth={2}
+                fillColor="rgba(45,87,250,0.08)"
               />
+              {this.props.routeCoordinates.length !== 0 ? (
+                <Polyline
+                  coordinates={this.props.routeCoordinates}
+                  strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                  strokeColors={["#B24112"]}
+                  strokeWidth={3}
+                  fillColor="green"
+                />
+              ) : null}
 
               <MapViewDirections
                 apikey={GOOGLE_MAPS_APIKEY}
@@ -95,6 +104,7 @@ class Map extends Component {
                 style={styles.button}
                 getChosenNearbyPlaces={this.props.getChosenNearbyPlaces}
                 saveMap={this.props.saveMap}
+                watchForLocationChanges={this.props.watchForLocationChanges}
               />
             </TouchableOpacity>
           </View>

@@ -61,7 +61,6 @@ export default function decode(encoded) {
     if (i !== decoder.length) {
         throw new Error('Invalid encoding. Premature ending reached');
     }
-    // console.log(header,res)
     return res
     return {
         ...header,

@@ -25,6 +25,7 @@ import MapView, {
 } from "react-native-maps";
 import Newmap2 from "./src/newmap2";
 import decode from "./src/utils/decoderHERE";
+import deltaGenerate from "./src/utils/deltaGenerate";
 
 const { width, height } = Dimensions.get("window");
 
@@ -48,33 +49,33 @@ export default class App extends React.Component {
     },
 
     nearbyPlaces: {
-      allNearbyPlaces: [
-        {
-          lat: 51.305243,
-          lng: -0.5788289,
-          name: "Greys",
-        },
-        {
-          lat: 51.307417,
-          lng: -0.582268,
-          name: "Ryan Roofing",
-        },
-        {
-          lat: 51.306417,
-          lng: -0.582238,
-          name: "Sohum Roofing",
-        },
-        {
-          lat: 51.304417,
-          lng: -0.582248,
-          name: "Someone Roofing",
-        },
-        {
-          lat: 51.308417,
-          lng: -0.582278,
-          name: "Hi",
-        },
-      ],
+      // allNearbyPlaces: [
+      //   {
+      //     lat: 51.305243,
+      //     lng: -0.5788289,
+      //     name: "Greys",
+      //   },
+      //   {
+      //     lat: 51.307417,
+      //     lng: -0.582268,
+      //     name: "Ryan Roofing",
+      //   },
+      //   {
+      //     lat: 51.306417,
+      //     lng: -0.582238,
+      //     name: "Sohum Roofing",
+      //   },
+      //   {
+      //     lat: 51.304417,
+      //     lng: -0.582248,
+      //     name: "Someone Roofing",
+      //   },
+      //   {
+      //     lat: 51.308417,
+      //     lng: -0.582278,
+      //     name: "Hi",
+      //   },
+      // ],
       // chosenNearbyPlaces: [
       //   {
       //     lat: 51.305243,
@@ -93,6 +94,7 @@ export default class App extends React.Component {
       //   },
       // ],
       chosenNearbyPlaces: null,
+      allNearbyPlaces: null,
     },
 
     isoline: {
@@ -103,14 +105,11 @@ export default class App extends React.Component {
       radiusMagnitude: 2000,
     },
 
-    userTrack:{
+    userTrack: {
       routeCoordinates: [],
       distanceTravelled: 0,
       timeTaken: 0,
-
-    }
-
-    
+    },
 
     // coordinate: new AnimatedRegion({
     //   latitude: LATITUDE,
@@ -121,10 +120,10 @@ export default class App extends React.Component {
   };
   async componentDidMount() {
     // this.getCurrentLocation()
-    // this.getAllNearbyPlaces()
-    this.getChosenNearbyPlaces();
-    // this.getRecentMapFromDB();
-    this.watchForLocationChanges()
+    // this.getAllNearbyPlaces();
+    // this.getChosenNearbyPlaces();
+    this.getRecentMapFromDB();
+    // this.watchForLocationChanges();
     // this.getIsoline();
 
     await Font.loadAsync({
@@ -179,7 +178,6 @@ export default class App extends React.Component {
           isoline.decodedIsoline = decodedIsoline;
 
           this.setState({ isoline: isoline });
-          console.log("@@@@@@@@@@@@@@@@@@@@@@@@@");
         });
       })
       .catch((err) => {
@@ -188,7 +186,6 @@ export default class App extends React.Component {
   };
 
   handleSettingsInputChange = (name, value) => {
-    console.log(name, value);
     let isoline = { ...this.state.isoline };
     isoline[name] = value;
     this.setState({ isoline: isoline });
@@ -220,7 +217,7 @@ export default class App extends React.Component {
       "," +
       this.state.initialRegion.longitude +
       "&radius=" +
-      this.state.radiusMagnitude +
+      this.state.isoline.radiusMagnitude +
       "&opennow&key=" +
       GOOGLE_MAPS_APIKEY;
 
@@ -249,7 +246,6 @@ export default class App extends React.Component {
           });
           let nearbyPlaces = { ...this.state.nearbyPlaces };
           nearbyPlaces.allNearbyPlaces = allNearbyPlaces;
-          console.log(allNearbyPlaces);
           this.setState({ nearbyPlaces: nearbyPlaces }, () => {
             this.getChosenNearbyPlaces();
           });
@@ -262,16 +258,12 @@ export default class App extends React.Component {
   getChosenNearbyPlaces = () => {
     var tempArrIdx = [];
     let newdata = [];
-    console.log("chosen#########################");
-    console.log(this.state.nearbyPlaces.allNearbyPlaces.length);
-    console.log("chosen#########################");
 
     if (this.state.nearbyPlaces.allNearbyPlaces.length >= LOCATIONS_CHOSEN) {
       while (tempArrIdx.length <= LOCATIONS_CHOSEN) {
         var r = Math.floor(
           Math.random() * this.state.nearbyPlaces.allNearbyPlaces.length
         );
-        console.log(r);
         if (tempArrIdx.indexOf(r) === -1) {
           newdata.push(this.state.nearbyPlaces.allNearbyPlaces[r]);
           tempArrIdx.push(r);
@@ -279,7 +271,6 @@ export default class App extends React.Component {
       }
       let nearbyPlaces = { ...this.state.nearbyPlaces };
       nearbyPlaces.chosenNearbyPlaces = newdata;
-      console.log(newdata);
       this.setState({ nearbyPlaces: nearbyPlaces });
     }
   };
@@ -294,9 +285,15 @@ export default class App extends React.Component {
       try {
         let mapObj = {
           initialRegion: this.state.initialRegion,
-          radiusMagnitude: this.state.radiusMagnitude,
-          allNearbyPlaces: this.state.nearbyPlaces.allNearbyPlaces,
-          chosenNearbyPlaces: this.state.nearbyPlaces.chosenNearbyPlaces,
+          nearbyPlaces: this.state.nearbyPlaces,
+          isoline: {
+            encodedIsoline: this.state.isoline.encodedIsoline,
+            decodedIsoline: [],
+            transportMode: this.state.isoline.transportMode,
+            rangeType: this.state.isoline.rangeType,
+            radiusMagnitude: this.state.isoline.radiusMagnitude,
+          },
+          userTrack: this.state.userTrack,
         };
         // console.log(JSON.stringify(this.state));
         await AsyncStorage.setItem(dateNow, JSON.stringify(mapObj));
@@ -334,7 +331,7 @@ export default class App extends React.Component {
     //     .then(() => alert("success"));
     // };
     _storeData();
-    _retrieveData();
+    // _retrieveData();
     // clearAllData();
   };
   getRecentMapFromDB = () => {
@@ -357,13 +354,8 @@ export default class App extends React.Component {
         const value = await AsyncStorage.getItem(key);
         if (value !== null) {
           // We have data!!
-          let newValue = JSON.parse(value);
-          this.setState({
-            initialRegion: newValue.initialRegion,
-            radiusMagnitude: newValue.radiusMagnitude,
-            allNearbyPlaces: newValue.nearbyPlaces.allNearbyPlaces,
-            chosenNearbyPlaces: newValue.nearbyPlaces.chosenNearbyPlaces,
-          });
+          let mapObj = JSON.parse(value);
+          this.setNewMap(mapObj);
         }
       } catch (error) {
         // Error retrieving data
@@ -376,11 +368,34 @@ export default class App extends React.Component {
   };
 
   setNewMap = (mapObj) => {
+    console.log(
+      deltaGenerate(
+        decode(mapObj.isoline.encodedIsoline).map((line) => {
+          return {
+            latitude: line[0],
+            longitude: line[1],
+          };
+        })
+      )
+    );
     this.setState({
+      selectedFooterTab: "Map",
+
       initialRegion: mapObj.initialRegion,
-      radiusMagnitude: mapObj.radiusMagnitude,
-      allNearbyPlaces: mapObj.nearbyPlaces.allNearbyPlaces,
-      chosenNearbyPlaces: mapObj.nearbyPlaces.chosenNearbyPlaces,
+      nearbyPlaces: mapObj.nearbyPlaces,
+      isoline: {
+        encodedIsoline: mapObj.isoline.encodedIsoline,
+        decodedIsoline: decode(mapObj.isoline.encodedIsoline).map((line) => {
+          return {
+            latitude: line[0],
+            longitude: line[1],
+          };
+        }),
+        transportMode: mapObj.isoline.transportMode,
+        rangeType: mapObj.isoline.rangeType,
+        radiusMagnitude: mapObj.isoline.radiusMagnitude,
+      },
+      userTrack: mapObj.userTrack,
     });
   };
 
@@ -393,14 +408,10 @@ export default class App extends React.Component {
         //   userDistanceTravelled,
         // } = this.state;
         const { latitude, longitude } = position.coords;
-        console.log("~~~~~~~~~~~~");
-
-        console.log(position.coords);
-        console.log("~~~~~~~~~~~~");
 
         const newCoordinate = {
-          lat:latitude,
-          lng:longitude,
+          latitude: latitude,
+          longitude: longitude,
         };
         if (Platform.OS === "android") {
           if (this.marker) {
@@ -414,23 +425,20 @@ export default class App extends React.Component {
         //   coordinate.timing(newCoordinate).start();
         // }
 
-        let initialRegion={...this.state.initialRegion}
-        initialRegion.latitude=latitude
-        initialRegion.longitude=longitude
+        let initialRegion = { ...this.state.initialRegion };
+        initialRegion.latitude = latitude;
+        initialRegion.longitude = longitude;
 
-        let userTrack={...this.state.userTrack}
-
-        userTrack.routeCoordinates.push(newCoordinate)
-        userTrack.distanceTravelled=userTrack.distanceTravelled+ this.calcDistance(newCoordinate)
-        console.log("##############")
-
-        console.log(userTrack)
-        console.log("##############")
+        let userTrack = { ...this.state.userTrack };
+        userTrack.routeCoordinates = userTrack.routeCoordinates.concat(
+          newCoordinate
+        );
+        userTrack.distanceTravelled =
+          userTrack.distanceTravelled + this.calcDistance(newCoordinate);
 
         this.setState({
-          initialRegion:initialRegion,
+          initialRegion: initialRegion,
           userTrack: userTrack,
-        
         });
       },
       (error) => console.log(error),
@@ -438,12 +446,10 @@ export default class App extends React.Component {
     );
   };
   calcDistance = (newLatLng) => {
-
-    let prevLatLng={
-      lat:this.state.initialRegion.latitude,
-      lng:this.state.initialRegion.longitude
-
-    }
+    let prevLatLng = {
+      lat: this.state.initialRegion.latitude,
+      lng: this.state.initialRegion.longitude,
+    };
     return haversine(prevLatLng, newLatLng) || 0;
   };
   submitSettings = () => {
@@ -481,9 +487,11 @@ export default class App extends React.Component {
               radiusMagnitude={this.state.radiusMagnitude}
               allNearbyPlaces={this.state.nearbyPlaces.allNearbyPlaces}
               chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
+              routeCoordinates={this.state.userTrack.routeCoordinates}
+              isoline={this.state.isoline.decodedIsoline}
+              watchForLocationChanges={this.watchForLocationChanges}
               getChosenNearbyPlaces={this.getChosenNearbyPlaces}
               saveMap={this.saveMap}
-              isoline={this.state.isoline.decodedIsoline}
             />
           ) : null}
           {this.state.selectedFooterTab === "Settings" ? (
@@ -496,10 +504,7 @@ export default class App extends React.Component {
             />
           ) : null}
           {this.state.selectedFooterTab === "Profile" ? (
-            <Profile
-              setNewMap={this.setNewMap}
-              handleChangeFooterTab={this.handleChangeFooterTab}
-            />
+            <Profile setNewMap={this.setNewMap} />
           ) : null}
         </Layout>
       </Container>

@@ -1,13 +1,11 @@
 Format UI
 make one request on first ever load perhaps
 add splash screen
-colour polyline
-get all nearby places doesnt work
 ===
 find a daytrip
 keep track of distance travelled
 image is not accurate
 make a directions request
 Maybe prevent route repititions
-navigation api
+react-navigation api
 error handling
