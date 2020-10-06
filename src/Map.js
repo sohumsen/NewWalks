@@ -25,11 +25,10 @@ import GOOGLE_MAPS_APIKEY from "../API_KEY";
 import Fab from "./FAB";
 import { Container, Header } from "native-base";
 import { AsyncStorage } from "react-native";
-
+import UserTrack from "./UI/UserTrack";
 
 class Map extends Component {
   render() {
-  
     return (
       <View>
         {this.props.chosenNearbyPlaces !== null ? (
@@ -99,14 +98,35 @@ class Map extends Component {
               /> */}
             </MapView>
 
-            <TouchableOpacity style={styles.button}>
-              <Fab
-                style={styles.button}
-                getChosenNearbyPlaces={this.props.getChosenNearbyPlaces}
-                saveMap={this.props.saveMap}
-                watchForLocationChanges={this.props.watchForLocationChanges}
-              />
-            </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.button}> */}
+            <Fab
+              style={{
+                position: "absolute",
+                top: "0%",
+              }}
+              getChosenNearbyPlaces={this.props.getChosenNearbyPlaces}
+              saveMap={this.props.saveMap}
+              watchForLocationChanges={this.props.watchForLocationChanges}
+            />
+
+            {this.props.trackingUser ? (
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: "40%",
+                  left: "50%",
+                  width:"100%"
+
+                }}
+              >
+                <UserTrack
+                  distanceTravelled={this.props.userTrack.distanceTravelled}
+                  timeTaken={this.props.userTrack.timeTaken}
+                />
+              </View>
+            ) : null}
+
+            {/* </TouchableOpacity> */}
           </View>
         ) : null}
       </View>

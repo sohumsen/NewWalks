@@ -40,6 +40,7 @@ export default class App extends React.Component {
   state = {
     isReady: false,
     selectedFooterTab: "Map",
+    trackingUser:true,
 
     initialRegion: {
       latitude: 51.30219236492249,
@@ -368,17 +369,19 @@ export default class App extends React.Component {
   };
 
   setNewMap = (mapObj) => {
-    console.log(
-      deltaGenerate(
-        decode(mapObj.isoline.encodedIsoline).map((line) => {
-          return {
-            latitude: line[0],
-            longitude: line[1],
-          };
-        })
-      )
-    );
+    // console.log(
+    //   // deltaGenerate(
+    //     decode(mapObj.isoline.encodedIsoline).map((line) => {
+    //       return {
+    //         latitude: line[0],
+    //         longitude: line[1],
+    //       };
+    //     })
+    //   // )
+    // );
+    console.log("setnewmap")
     this.setState({
+
       selectedFooterTab: "Map",
 
       initialRegion: mapObj.initialRegion,
@@ -400,6 +403,10 @@ export default class App extends React.Component {
   };
 
   watchForLocationChanges = () => {
+
+    this.setState({trackingUser:true})
+
+
     this.watchID = navigator.geolocation.watchPosition(
       (position) => {
         // const {
@@ -489,6 +496,10 @@ export default class App extends React.Component {
               chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
               routeCoordinates={this.state.userTrack.routeCoordinates}
               isoline={this.state.isoline.decodedIsoline}
+
+              
+              userTrack={this.state.userTrack}
+              trackingUser={this.state.trackingUser}
               watchForLocationChanges={this.watchForLocationChanges}
               getChosenNearbyPlaces={this.getChosenNearbyPlaces}
               saveMap={this.saveMap}

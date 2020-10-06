@@ -46,8 +46,6 @@ export default class PickerWithIcon extends Component {
                 <Picker.Item label="Car" value="car" />
                 <Picker.Item label="Truck" value="truck" />
               </Picker>
-            </Item>
-            <Item regular>
               <Input
                 keyboardType="numeric"
                 value={this.props.radiusMagnitude.toString()}
@@ -57,9 +55,10 @@ export default class PickerWithIcon extends Component {
                 }
               />
             </Item>
+            
             <Item regular>
               <Button onPress={()=>{this.props.submitSettings()}}>
-                <Text>Submit</Text>
+                <Text>Go!</Text>
                 <Icon name="arrow-forward" />
               </Button>
             </Item>
