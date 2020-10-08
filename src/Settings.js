@@ -11,7 +11,7 @@ import {
   Body,
   Right,
   Switch,
-  Title,
+  Title, Toast
 } from "native-base";
 import Config from "./Config";
 import Picker from "./UI/Picker";
@@ -59,6 +59,7 @@ export default class ListIconExample extends Component {
             handleChangeFooterTab={this.props.handleChangeFooterTab}
           />
         ) : null} */}
+      
       </Content>
     );
   }

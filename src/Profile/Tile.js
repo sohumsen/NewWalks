@@ -36,7 +36,11 @@ export default class Tile extends Component {
       })
 
       .catch((err) => {
-        console.log("err" + err);
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       });
   };
 

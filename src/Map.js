@@ -28,26 +28,6 @@ import { AsyncStorage } from "react-native";
 import UserTrack from "./UI/UserTrack";
 
 class Map extends Component {
-  // state = {
-  //   waypointsRoute: "",
-  //   routeDistance: "",
-  //   routeDuration: "",
-  // };
-
-  // componentDidUpdate(prevProps) {
-  //   // Typical usage (don't forget to compare props):
-  //   if (this.props.chosenNearbyPlaces !== prevProps.chosenNearbyPlaces) {
-  //     this.getWaypointRoute();
-  //     console.log("this.getWaypointRoute();");
-  //   }
-  // }
-
-
-  // componentDidMount() {
-  //   console.log("this.getWaypointRoute();");
-
-  //   this.getWaypointRoute();
-  // }
   render() {
     return (
       <View>
@@ -132,8 +112,7 @@ class Map extends Component {
                 style={{
                   position: "absolute",
                   top: "0%",
-                  left: "10%",
-                  width: "100%",
+                  left: "70%",
                 }}
               >
                 <UserTrack
@@ -143,7 +122,13 @@ class Map extends Component {
               </View>
             ) : null}
 
-            <Card style={{width:200}}>
+            <Card
+              style={{
+                position: "absolute",
+                top: "0%",
+                left: "30%",
+              }}
+            >
               <CardItem>
                 <Text>Distance: {this.props.waypointsRoute.routeDistance}</Text>
               </CardItem>

@@ -4,27 +4,43 @@ export default class FABExample extends Component {
   constructor() {
     super();
     this.state = {
-      active: "true",
+      active: false,
     };
   }
   render() {
     return (
       <View>
-        <Button onPress={() => this.props.saveMap()}>
-          <Icon name="save" />
-        </Button>
         <Button
-          style={{ backgroundColor: "red" }}
-          onPress={() => this.props.getChosenNearbyPlaces()}
+          onPress={() => {
+            this.setState({ active: !this.state.active });
+          }}
+          style={{ margin: 2 }}
         >
-          <Icon name="create" />
+          <Icon name="open" />
         </Button>
-        <Button
-          style={{ backgroundColor: "#34A34F" }}
-          onPress={() => this.props.watchForLocationChanges()}
-        >
-          <Icon name="ios-arrow-dropright" />
-        </Button>
+
+        {this.state.active ? (
+          <View>
+            <Button
+              onPress={() => this.props.saveMap()}
+              style={{ margin: 2, backgroundColor: "brown" }}
+            >
+              <Icon name="save" />
+            </Button>
+            <Button
+              style={{ margin: 2, backgroundColor: "purple" }}
+              onPress={() => this.props.getChosenNearbyPlaces()}
+            >
+              <Icon name="create" />
+            </Button>
+            <Button
+              style={{ margin: 2, backgroundColor: "green" }}
+              onPress={() => this.props.watchForLocationChanges()}
+            >
+              <Icon name="ios-arrow-dropright" />
+            </Button>
+          </View>
+        ) : null}
       </View>
     );
   }

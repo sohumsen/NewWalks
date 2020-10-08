@@ -7,44 +7,35 @@ import {
   Button,
   Icon,
   Fab,
-  Text,
   Card,
   CardItem,
   Body,
   H4,
 } from "native-base";
+
+import {Text} from 'react-native'
 export default class FABExample extends Component {
   state = {
-    firstTime: Date.now()/1000,
+    firstTime: Date.now() / 1000,
 
     curTime: "",
   };
   componentDidMount() {
     setInterval(() => {
       this.setState({
-        curTime: Math.floor(Date.now()/1000 - this.state.firstTime),
+        curTime: Math.floor(Date.now() / 1000 - this.state.firstTime),
       });
     }, 1000);
   }
   render() {
     return (
-      <View style={{ display: "flex", flexDirection: "row" }}>
+      <View>
         <Card>
-          <CardItem
-            style={{ flex: 1 }}
-            button
-            onPress={() => alert("This is Card Header")}
-          >
+          <CardItem>
             <Text>Distance: {this.props.distanceTravelled}</Text>
           </CardItem>
-          <CardItem
-            style={{ flex: 1 }}
-            button
-            onPress={() => alert("This is Card Body")}
-          >
-            <Text>
-              Time: {this.state.curTime}
-            </Text>
+          <CardItem>
+            <Text>Time: {this.state.curTime}</Text>
           </CardItem>
         </Card>
       </View>

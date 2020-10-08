@@ -1,6 +1,6 @@
 import React from "react";
 import { AppLoading } from "expo";
-import { Container } from "native-base";
+import { Container, Toast } from "native-base";
 import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
 import Layout from "./src/Layout";
@@ -167,11 +167,12 @@ export default class App extends React.Component {
     )
       .then((response) => {
         if (response.status !== 200) {
-          console.log("bad");
+          Toast.show({
+            text: "Error: " + response.status,
+            buttonText: "Okay",
+            type: "danger",
+          });
 
-          alert(
-            "Looks like there was a problem. Status Code: " + response.status
-          );
           return;
         }
 
@@ -193,7 +194,11 @@ export default class App extends React.Component {
         });
       })
       .catch((err) => {
-        console.log("bad");
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       });
   };
 
@@ -239,8 +244,11 @@ export default class App extends React.Component {
     )
       .then((response) => {
         if (response.status !== 200) {
-          console.log("bad");
-
+          Toast.show({
+            text: "Error: " + response.status,
+            buttonText: "Okay",
+            type: "danger",
+          });
           alert(
             "Looks like there was a problem. Status Code: " + response.status
           );
@@ -264,7 +272,11 @@ export default class App extends React.Component {
         });
       })
       .catch((err) => {
-        console.log("bad");
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       });
   };
   getChosenNearbyPlaces = () => {
@@ -339,8 +351,6 @@ export default class App extends React.Component {
 
         // Examine the text in the response
         response.json().then((data) => {
-          console.log(data.routes[0].legs[0].duration);
-
           let waypointsRoute = { ...this.state.waypointsRoute };
 
           waypointsRoute.encodedPoints =
@@ -357,7 +367,11 @@ export default class App extends React.Component {
         });
       })
       .catch((err) => {
-        console.log("bad");
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       });
   };
   decode = (t, e) => {
@@ -418,32 +432,28 @@ export default class App extends React.Component {
 
           userTrack: this.state.userTrack,
         };
-        // console.log(JSON.stringify(this.state));
         await AsyncStorage.setItem(dateNow, JSON.stringify(mapObj));
+        Toast.show({
+          text: "Saved map",
+          buttonText: "Okay",
+          type: "success",
+        });
       } catch (error) {
-        console.log(error);
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       }
     };
-    const _retrieveData = async () => {
-      try {
-        const value = await AsyncStorage.getItem(dateNow);
-        if (value !== null) {
-          // We have data!!
-        }
-      } catch (error) {
-        // Error retrieving data
-        console.log(error);
-      }
-    };
+
     // const _removeData = async () => {
     //   try {
     //     const value = await AsyncStorage.removeItem(dateNow);
     //     if (value !== null) {
     //       // We have data!!
-    //       console.log(value);
     //     }
     //   } catch (error) {
-    //     console.log(error);
 
     //     // Error retrieving data
     //   }
@@ -459,7 +469,6 @@ export default class App extends React.Component {
   };
   getRecentMapFromDB = () => {
     const _retrieveAllData = async () => {
-      console.log("getAllKeys");
       try {
         const value = await AsyncStorage.getAllKeys();
         if (value !== null || value.length !== 0) {
@@ -469,7 +478,11 @@ export default class App extends React.Component {
         }
       } catch (error) {
         // Error retrieving data
-        console.log(error);
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       }
     };
     const _retrieveData = async (key) => {
@@ -483,7 +496,11 @@ export default class App extends React.Component {
       } catch (error) {
         // Error retrieving data
 
-        console.log(error);
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
       }
     };
 
@@ -491,20 +508,6 @@ export default class App extends React.Component {
   };
 
   setNewMap = (mapObj) => {
-    // console.log(
-    //   // deltaGenerate(
-    //     decode(mapObj.isoline.encodedIsoline).map((line) => {
-    //       return {
-    //         latitude: line[0],
-    //         longitude: line[1],
-    //       };
-    //     })
-    //   // )
-    // );
-    console.log("setnewmap");
-    console.log( mapObj.isoline)
-    console.log("////////////////");
-
     this.setState({
       selectedFooterTab: "Map",
       trackingUserBool: false,
@@ -579,12 +582,17 @@ export default class App extends React.Component {
           userTrack: userTrack,
         });
       },
-      (error) => console.log(error),
+      (error) => {
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
+      },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, accuracy: 0.1 }
     );
   };
   calcDistance = (newLatLng) => {
-    console.log("calcDistance");
     let prevLatLng = {
       lat: this.state.initialRegion.latitude,
       lng: this.state.initialRegion.longitude,
@@ -592,64 +600,79 @@ export default class App extends React.Component {
     return haversine(prevLatLng, newLatLng) || 0;
   };
   submitSettings = () => {
-    console.log("submitted");
     this.getAllNearbyPlaces();
     this.handleChangeFooterTab("Map");
     this.getIsoline();
   };
 
   render() {
+    // const Stack = createStackNavigator();
     // var directions = new GDirections ();
 
     if (!this.state.isReady) {
       return <AppLoading />;
     }
 
+    // const Map =()=> (
+    //   <Map
+    //     initialRegion={this.state.initialRegion}
+    //     chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
+    //     isoline={this.state.isoline}
+    //     userTrack={this.state.userTrack}
+    //     waypointsRoute={this.state.waypointsRoute}
+    //     trackingUserBool={this.state.trackingUserBool}
+    //     watchForLocationChanges={this.watchForLocationChanges}
+    //     getChosenNearbyPlaces={this.getChosenNearbyPlaces}
+    //     saveMap={this.saveMap}
+    //   />
+    // );
+
     return (
-      <Container>
-        <Layout
-          selectedFooterTab={this.state.selectedFooterTab}
-          handleChangeFooterTab={this.handleChangeFooterTab}
-        >
-          {/* <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen name="Map">
-                {(props) => <Map {...props} extraData={someData} />}
-              </Stack.Screen>
-              <Stack.Screen name="Map" component={<Map />} />
-            </Stack.Navigator>
-          </NavigationContainer> */}
-          {this.state.selectedFooterTab === "Map" ? (
-            // <Newmap2/>
-            <Map
-              initialRegion={this.state.initialRegion}
-              allNearbyPlaces={this.state.nearbyPlaces.allNearbyPlaces}
-              chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
-              isoline={this.state.isoline}
-              userTrack={this.state.userTrack}
-              waypointsRoute={this.state.waypointsRoute}
-              trackingUserBool={this.state.trackingUserBool}
-              watchForLocationChanges={this.watchForLocationChanges}
-              getChosenNearbyPlaces={this.getChosenNearbyPlaces}
-              saveMap={this.saveMap}
-            />
-          ) : null}
-          {this.state.selectedFooterTab === "Settings" ? (
-            <Settings
-              radiusMagnitude={this.state.isoline.radiusMagnitude}
-              rangeType={this.state.isoline.rangeType}
-              transportMode={this.state.isoline.transportMode}
-              handleSettingsInputChange={this.handleSettingsInputChange}
-              submitSettings={this.submitSettings}
-            />
-          ) : null}
-          {this.state.selectedFooterTab === "Profile" ? (
-            <Profile setNewMap={this.setNewMap} />
-          ) : null}
-        </Layout>
-      </Container>
+      <Root>
+        <Container>
+          <Layout
+            selectedFooterTab={this.state.selectedFooterTab}
+            handleChangeFooterTab={this.handleChangeFooterTab}
+          >
+            {/* <NavigationContainer>
+              <Stack.Navigator>
+                <Stack.Screen name="Map" component={Map} />
+
+                
+
+            
+              </Stack.Navigator>
+            </NavigationContainer> */}
+            {this.state.selectedFooterTab === "Map" ? (
+              // <Newmap2/>
+              <Map
+                initialRegion={this.state.initialRegion}
+                chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
+                isoline={this.state.isoline}
+                userTrack={this.state.userTrack}
+                waypointsRoute={this.state.waypointsRoute}
+                trackingUserBool={this.state.trackingUserBool}
+                watchForLocationChanges={this.watchForLocationChanges}
+                getChosenNearbyPlaces={this.getChosenNearbyPlaces}
+                saveMap={this.saveMap}
+              />
+            ) : null}
+
+            {this.state.selectedFooterTab === "Settings" ? (
+              <Settings
+                radiusMagnitude={this.state.isoline.radiusMagnitude}
+                rangeType={this.state.isoline.rangeType}
+                transportMode={this.state.isoline.transportMode}
+                handleSettingsInputChange={this.handleSettingsInputChange}
+                submitSettings={this.submitSettings}
+              />
+            ) : null}
+            {this.state.selectedFooterTab === "Profile" ? (
+              <Profile setNewMap={this.setNewMap} />
+            ) : null}
+          </Layout>
+        </Container>
+      </Root>
     );
   }
 }
-
-const Stack = createStackNavigator();

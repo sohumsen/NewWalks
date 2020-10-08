@@ -1,5 +1,4 @@
 Format UI
-make one request on first ever load perhaps
 add splash screen
 make map view around points
 ===
@@ -7,4 +6,3 @@ utilise vehicle metrics possibly
 keep track of distance travelled
 Maybe prevent route repititions
 react-navigation api
-error handling

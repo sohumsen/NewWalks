@@ -11,7 +11,7 @@ import {
   Body,
   Right,
   Switch,
-  Title,
+  Title, Toast
 } from "native-base";
 import MapImages from "./MapImages";
 import { AsyncStorage } from "react-native";
@@ -54,8 +54,11 @@ export default class Profile extends Component {
         // We have data!!
       }
     } catch (error) {
-      console.log(error);
-
+      Toast.show({
+        text: "Oops, something went wrong",
+        buttonText: "Okay",
+        type: "danger",
+      });
       // Error retrieving data
     }
   };
