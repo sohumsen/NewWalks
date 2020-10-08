@@ -14,7 +14,8 @@ import { Root } from "native-base";
 import { createSwitchNavigator, StackNavigator } from "react-navigation";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import GOOGLE_MAPS_APIKEY from "./API_KEY";
+import GOOGLE_MAPS_APIKEY from "./GOOGLE_API_KEY";
+import HERE_API_KEY from "./HERE_API_KEY";
 import NewMap from "./src/newMap";
 import haversine from "haversine";
 import MapView, {
@@ -24,9 +25,9 @@ import MapView, {
   PROVIDER_GOOGLE,
 } from "react-native-maps";
 import Newmap2 from "./src/newmap2";
-import decode from "./src/utils/decoderHERE";
+import decoderHERE from "./src/utils/decoderHERE";
 import deltaGenerate from "./src/utils/deltaGenerate";
-
+import decoderGOOGLE from "./src/utils/decoderGOOGLE";
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -40,7 +41,7 @@ export default class App extends React.Component {
   state = {
     isReady: false,
     selectedFooterTab: "Map",
-    trackingUser:true,
+    trackingUserBool: false,
 
     initialRegion: {
       latitude: 51.30219236492249,
@@ -106,6 +107,13 @@ export default class App extends React.Component {
       radiusMagnitude: 2000,
     },
 
+    waypointsRoute: {
+      decodedPoints: "",
+      encodedPoints: "",
+      routeDuration: "",
+      routeDistance: "",
+    },
+
     userTrack: {
       routeCoordinates: [],
       distanceTravelled: 0,
@@ -121,11 +129,11 @@ export default class App extends React.Component {
   };
   async componentDidMount() {
     // this.getCurrentLocation()
-    // this.getAllNearbyPlaces();
+    this.getAllNearbyPlaces();
     // this.getChosenNearbyPlaces();
-    this.getRecentMapFromDB();
+    // this.getRecentMapFromDB();
     // this.watchForLocationChanges();
-    // this.getIsoline();
+    this.getIsoline();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -147,12 +155,15 @@ export default class App extends React.Component {
       this.state.isoline.rangeType +
       "&range[values]=" +
       this.state.isoline.radiusMagnitude;
+
     fetch(
       "https://isoline.router.hereapi.com/v8/isolines?" +
         transportMode +
         distance +
         origin +
-        "&apiKey=nMr30cwufvwivVzg5hZkozfTavfHBeRAc-ktxTc04FU&legAttributes=shape"
+        "&apiKey=" +
+        HERE_API_KEY +
+        "&legAttributes=shape"
     )
       .then((response) => {
         if (response.status !== 200) {
@@ -167,14 +178,14 @@ export default class App extends React.Component {
         // Examine the text in the response
         response.json().then((data) => {
           let isoline = { ...this.state.isoline };
-          let decodedIsoline = decode(data.isolines[0].polygons[0].outer).map(
-            (line) => {
-              return {
-                latitude: line[0],
-                longitude: line[1],
-              };
-            }
-          );
+          let decodedIsoline = decoderHERE(
+            data.isolines[0].polygons[0].outer
+          ).map((line) => {
+            return {
+              latitude: line[0],
+              longitude: line[1],
+            };
+          });
           isoline.encodedIsoline = data.isolines[0].polygons[0].outer;
           isoline.decodedIsoline = decodedIsoline;
 
@@ -272,8 +283,112 @@ export default class App extends React.Component {
       }
       let nearbyPlaces = { ...this.state.nearbyPlaces };
       nearbyPlaces.chosenNearbyPlaces = newdata;
-      this.setState({ nearbyPlaces: nearbyPlaces });
+      this.setState({ nearbyPlaces: nearbyPlaces }, () => {
+        this.getWaypointRoute();
+      });
     }
+  };
+
+  getWaypointRoute = () => {
+    let transportMode = "&mode=walking";
+
+    if (this.state.isoline.transportMode === "pedestrian") {
+      transportMode = "&mode=walking";
+    }
+    if (
+      this.state.isoline.transportMode === "car" ||
+      this.state.isoline.transportMode === "truck"
+    ) {
+      transportMode = "&mode=driving";
+    }
+
+    let origin =
+      "origin=" +
+      this.state.initialRegion.latitude +
+      "%2C" +
+      this.state.initialRegion.longitude;
+    let destination =
+      "&destination=" +
+      this.state.initialRegion.latitude +
+      "%2C" +
+      this.state.initialRegion.longitude;
+    let waypoints =
+      "&waypoints=" +
+      this.state.nearbyPlaces.chosenNearbyPlaces
+        .map(
+          (latLingObj) => latLingObj.lat + "%2C" + latLingObj.lng + "%7Cvia:"
+        )
+        .join("");
+
+    fetch(
+      "https://maps.googleapis.com/maps/api/directions/json?" +
+        origin +
+        destination +
+        waypoints +
+        transportMode +
+        "&key=" +
+        GOOGLE_MAPS_APIKEY
+    )
+      .then((response) => {
+        if (response.status !== 200) {
+          alert(
+            "Looks like there was a problem. Status Code: " + response.status
+          );
+          return;
+        }
+
+        // Examine the text in the response
+        response.json().then((data) => {
+          console.log(data.routes[0].legs[0].duration);
+
+          let waypointsRoute = { ...this.state.waypointsRoute };
+
+          waypointsRoute.encodedPoints =
+            data.routes[0].overview_polyline.points;
+          waypointsRoute.decodedPoints = decoderGOOGLE(
+            data.routes[0].overview_polyline.points
+          );
+          waypointsRoute.routeDuration = data.routes[0].legs[0].duration.text;
+          waypointsRoute.routeDistance = data.routes[0].legs[0].distance.text;
+
+          this.setState({
+            waypointsRoute: waypointsRoute,
+          });
+        });
+      })
+      .catch((err) => {
+        console.log("bad");
+      });
+  };
+  decode = (t, e) => {
+    for (
+      var n,
+        o,
+        u = 0,
+        l = 0,
+        r = 0,
+        d = [],
+        h = 0,
+        i = 0,
+        a = null,
+        c = Math.pow(10, e || 5);
+      u < t.length;
+
+    ) {
+      (a = null), (h = 0), (i = 0);
+      do (a = t.charCodeAt(u++) - 63), (i |= (31 & a) << h), (h += 5);
+      while (a >= 32);
+      (n = 1 & i ? ~(i >> 1) : i >> 1), (h = i = 0);
+      do (a = t.charCodeAt(u++) - 63), (i |= (31 & a) << h), (h += 5);
+      while (a >= 32);
+      (o = 1 & i ? ~(i >> 1) : i >> 1),
+        (l += n),
+        (r += o),
+        d.push([l / c, r / c]);
+    }
+    return (d = d.map(function (t) {
+      return { latitude: t[0], longitude: t[1] };
+    }));
   };
 
   handleChangeFooterTab = (name) => {
@@ -294,6 +409,13 @@ export default class App extends React.Component {
             rangeType: this.state.isoline.rangeType,
             radiusMagnitude: this.state.isoline.radiusMagnitude,
           },
+          waypointsRoute: {
+            decodedPoints: [],
+            encodedPoints: this.state.waypointsRoute.encodedPoints,
+            routeDuration: this.state.waypointsRoute.routeDuration,
+            routeDistance: this.state.waypointsRoute.routeDistance,
+          },
+
           userTrack: this.state.userTrack,
         };
         // console.log(JSON.stringify(this.state));
@@ -379,33 +501,42 @@ export default class App extends React.Component {
     //     })
     //   // )
     // );
-    console.log("setnewmap")
-    this.setState({
+    console.log("setnewmap");
+    console.log( mapObj.isoline)
+    console.log("////////////////");
 
+    this.setState({
       selectedFooterTab: "Map",
+      trackingUserBool: false,
 
       initialRegion: mapObj.initialRegion,
       nearbyPlaces: mapObj.nearbyPlaces,
       isoline: {
         encodedIsoline: mapObj.isoline.encodedIsoline,
-        decodedIsoline: decode(mapObj.isoline.encodedIsoline).map((line) => {
-          return {
-            latitude: line[0],
-            longitude: line[1],
-          };
-        }),
+        decodedIsoline: decoderHERE(mapObj.isoline.encodedIsoline).map(
+          (line) => {
+            return {
+              latitude: line[0],
+              longitude: line[1],
+            };
+          }
+        ),
         transportMode: mapObj.isoline.transportMode,
         rangeType: mapObj.isoline.rangeType,
         radiusMagnitude: mapObj.isoline.radiusMagnitude,
+      },
+      waypointsRoute: {
+        decodedPoints: decoderGOOGLE(mapObj.waypointsRoute.encodedPoints),
+        encodedPoints: mapObj.waypointsRoute.encodedPoints,
+        routeDuration: mapObj.waypointsRoute.routeDuration,
+        routeDistance: mapObj.waypointsRoute.routeDistance,
       },
       userTrack: mapObj.userTrack,
     });
   };
 
   watchForLocationChanges = () => {
-
-    this.setState({trackingUser:true})
-
+    this.setState({ trackingUserBool: !this.state.trackingUserBool });
 
     this.watchID = navigator.geolocation.watchPosition(
       (position) => {
@@ -449,10 +580,11 @@ export default class App extends React.Component {
         });
       },
       (error) => console.log(error),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, accuracy: 0.1 }
     );
   };
   calcDistance = (newLatLng) => {
+    console.log("calcDistance");
     let prevLatLng = {
       lat: this.state.initialRegion.latitude,
       lng: this.state.initialRegion.longitude,
@@ -491,15 +623,12 @@ export default class App extends React.Component {
             // <Newmap2/>
             <Map
               initialRegion={this.state.initialRegion}
-              radiusMagnitude={this.state.radiusMagnitude}
               allNearbyPlaces={this.state.nearbyPlaces.allNearbyPlaces}
               chosenNearbyPlaces={this.state.nearbyPlaces.chosenNearbyPlaces}
-              routeCoordinates={this.state.userTrack.routeCoordinates}
-              isoline={this.state.isoline.decodedIsoline}
-
-              
+              isoline={this.state.isoline}
               userTrack={this.state.userTrack}
-              trackingUser={this.state.trackingUser}
+              waypointsRoute={this.state.waypointsRoute}
+              trackingUserBool={this.state.trackingUserBool}
               watchForLocationChanges={this.watchForLocationChanges}
               getChosenNearbyPlaces={this.getChosenNearbyPlaces}
               saveMap={this.saveMap}

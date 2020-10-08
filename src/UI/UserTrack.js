@@ -11,14 +11,20 @@ import {
   Card,
   CardItem,
   Body,
-  H1,
+  H4,
 } from "native-base";
 export default class FABExample extends Component {
-  constructor() {
-    super();
-    this.state = {
-      active: "true",
-    };
+  state = {
+    firstTime: Date.now()/1000,
+
+    curTime: "",
+  };
+  componentDidMount() {
+    setInterval(() => {
+      this.setState({
+        curTime: Math.floor(Date.now()/1000 - this.state.firstTime),
+      });
+    }, 1000);
   }
   render() {
     return (
@@ -29,18 +35,17 @@ export default class FABExample extends Component {
             button
             onPress={() => alert("This is Card Header")}
           >
-            <H1>Distance: {this.props.distanceTravelled}</H1>
+            <Text>Distance: {this.props.distanceTravelled}</Text>
           </CardItem>
           <CardItem
             style={{ flex: 1 }}
             button
             onPress={() => alert("This is Card Body")}
           >
-            <Text>Time: {this.props.timeTaken}</Text>
+            <Text>
+              Time: {this.state.curTime}
+            </Text>
           </CardItem>
-          <Button style={{ position: "relative",right:0,width:20,height:20 }} onPress={() => this.props.saveMap()}>
-            <Icon  name="pause" />
-          </Button>
         </Card>
       </View>
     );

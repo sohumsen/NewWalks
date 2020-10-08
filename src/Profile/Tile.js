@@ -1,6 +1,6 @@
 import { View, Text } from "native-base";
 import { Image } from "react-native";
-import API_KEY from "../../API_KEY";
+import GOOGLE_API_KEY from "../../GOOGLE_API_KEY";
 import React, { Component } from "react";
 export default class Tile extends Component {
   state = {
@@ -11,34 +11,23 @@ export default class Tile extends Component {
   }
 
   getImagePath = () => {
-    let waypoints = this.props.mapObj; // [{lat:"",long:""}]
-
-    let waypointsStr =
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
-        .latitude +
-      "," +
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
-        .longitude +
-      "|" +
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].nearbyPlaces.chosenNearbyPlaces
-        .map((waypoint) => waypoint.lat + "," + waypoint.lng)
-        .join("|") +
-      "|" +
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
-        .latitude +
-      "," +
-      this.props.mapObj[Object.keys(this.props.mapObj)[0]].initialRegion
-        .longitude;
-   
     let queryParams =
-      "&path=" + waypointsStr + "&key=" + API_KEY + "&sensor=true";
+      "&path=enc:" +
+      this.props.mapObj[Object.keys(this.props.mapObj)[0]].waypointsRoute
+        .encodedPoints +
+      "&key=" +
+      GOOGLE_API_KEY +
+      "&sensor=true";
 
-    fetch(
-      "http://maps.googleapis.com/maps/api/staticmap?size=400x200" + queryParams
-    )
+    let url =
+      "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
+      queryParams;
+
+    fetch(url)
       .then((response) => response.blob())
       .then((images) => {
         let url = URL.createObjectURL(images);
+
         this.setState({
           image: (
             <Image source={{ uri: url }} style={{ width: 400, height: 200 }} />

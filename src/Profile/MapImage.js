@@ -21,7 +21,6 @@ import Tile from "./Tile";
 
 export default class CardImageExample extends Component {
   render() {
-    
     return (
       <Card>
         <CardItem>
@@ -50,17 +49,31 @@ export default class CardImageExample extends Component {
             >
               <Icon name="trash" />
             </Button>
+           
           </Left>
           <Body>
             <Button transparent>
-              <Text>
+              
+              {/* <Text>
                 {this.props.mapObj[Object.keys(this.props.mapObj)[0]][
                   "nearbyPlaces"
-                ][
-                  "chosenNearbyPlaces"
-                ]
+                ]["chosenNearbyPlaces"]
                   .map((place) => place.name)
                   .join("->")}
+              </Text> */}
+               <Text>
+                {
+                  this.props.mapObj[Object.keys(this.props.mapObj)[0]][
+                    "waypointsRoute"
+                  ]["routeDistance"]
+                }
+              </Text>
+              <Text>
+                {
+                  this.props.mapObj[Object.keys(this.props.mapObj)[0]][
+                    "waypointsRoute"
+                  ]["routeDuration"]
+                }
               </Text>
             </Button>
           </Body>
