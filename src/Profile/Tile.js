@@ -1,4 +1,4 @@
-import { View, Text } from "native-base";
+import { View, Text, Toast } from "native-base";
 import { Image } from "react-native";
 import GOOGLE_API_KEY from "../../GOOGLE_API_KEY";
 import React, { Component } from "react";
@@ -22,20 +22,29 @@ export default class Tile extends Component {
     let url =
       "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
       queryParams;
+    console.log(url);
 
     fetch(url)
       .then((response) => response.blob())
       .then((images) => {
-        let url = URL.createObjectURL(images);
+        // let url = URL.createObjectURL(images);
 
         this.setState({
           image: (
-            <Image source={{ uri: url }} style={{ width: 400, height: 200 }} />
+            <Image
+              source={{
+                uri:
+                  "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
+                  queryParams,
+              }}
+              style={{ width: 400, height: 200 }}
+            />
           ),
         });
       })
 
       .catch((err) => {
+        console.log(err);
         Toast.show({
           text: "Oops, something went wrong",
           buttonText: "Okay",

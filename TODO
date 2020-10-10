@@ -1,6 +1,8 @@
 Format UI
 add splash screen
 make map view around points
+on maps, show what user selected in settings
+get all nearbyplaces take into account time or distance
 ===
 utilise vehicle metrics possibly
 keep track of distance travelled

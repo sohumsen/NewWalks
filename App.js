@@ -36,6 +36,8 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0422;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const LOCATIONS_CHOSEN = 2;
+const WALKING_SPEED = 0.6; //m/s
+const DRIVING_SPEED = 7; //m/s
 
 export default class App extends React.Component {
   state = {
@@ -129,9 +131,9 @@ export default class App extends React.Component {
   };
   async componentDidMount() {
     // this.getCurrentLocation()
-    this.getAllNearbyPlaces();
+    // this.getAllNearbyPlaces();
     // this.getChosenNearbyPlaces();
-    // this.getRecentMapFromDB();
+    this.getRecentMapFromDB();
     // this.watchForLocationChanges();
     this.getIsoline();
 
@@ -228,13 +230,30 @@ export default class App extends React.Component {
   };
 
   getAllNearbyPlaces = () => {
+    let radiusMagnitude = this.state.isoline.radiusMagnitude;
+
+    let searchDistance = 0;
+
+    if (this.state.isoline.rangeType === "distance") {
+      searchDistance = radiusMagnitude;
+    } else if (this.state.isoline.rangeType === "time") {
+      if (this.state.isoline.transportMode === "pedestrian") {
+        searchDistance = radiusMagnitude * WALKING_SPEED;
+      } else if (
+        this.state.isoline.transportMode === "car" ||
+        this.state.isoline.transportMode === "truck"
+      ) {
+        searchDistance = radiusMagnitude * DRIVING_SPEED;
+      }
+    }
+
     let queryParams =
       "location=" +
       this.state.initialRegion.latitude +
       "," +
       this.state.initialRegion.longitude +
       "&radius=" +
-      this.state.isoline.radiusMagnitude +
+      searchDistance +
       "&opennow&key=" +
       GOOGLE_MAPS_APIKEY;
 
@@ -294,6 +313,7 @@ export default class App extends React.Component {
         }
       }
       let nearbyPlaces = { ...this.state.nearbyPlaces };
+
       nearbyPlaces.chosenNearbyPlaces = newdata;
       this.setState({ nearbyPlaces: nearbyPlaces }, () => {
         this.getWaypointRoute();
@@ -351,6 +371,25 @@ export default class App extends React.Component {
 
         // Examine the text in the response
         response.json().then((data) => {
+          // let decoded = decoderGOOGLE(data.routes[0].overview_polyline.points);
+          // let c=decoded.filter((e, i, a) => a.indexOf(e) !== i) // [2, 4]
+
+          // // for (let i = 0; i < decoded.length; i++) {
+          // //   if (decoded.indexOf(decoded[i].)!==)
+
+          // // }
+          // console.log(c)
+          // var valueArr = decoded.map(function latitude(item) {
+          //   return item.latitude;
+          // });
+
+          // console.log(valueArr.length)
+
+          // var isDuplicate = valueArr.some(function (item, idx) {
+          //   return valueArr.indexOf(item) ;
+          // });
+          // console.log(isDuplicate);
+
           let waypointsRoute = { ...this.state.waypointsRoute };
 
           waypointsRoute.encodedPoints =
@@ -471,10 +510,10 @@ export default class App extends React.Component {
     const _retrieveAllData = async () => {
       try {
         const value = await AsyncStorage.getAllKeys();
-        if (value !== null || value.length !== 0) {
+        if (value.length !== 0) {
           _retrieveData(value[0]);
         } else {
-          this.getChosenNearbyPlaces();
+          this.getAllNearbyPlaces();
         }
       } catch (error) {
         // Error retrieving data

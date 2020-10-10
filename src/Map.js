@@ -26,13 +26,29 @@ import Fab from "./FAB";
 import { Container, Header } from "native-base";
 import { AsyncStorage } from "react-native";
 import UserTrack from "./UI/UserTrack";
-
+import AnimatedPolyline from "./utils/AnimatedPolyline";
+const WALKING_SPEED = 1.3; //m/s
+const DRIVING_SPEED = 7; //m/s
 class Map extends Component {
   render() {
+    let searchDistance = 0;
+
+    if (this.props.isoline.rangeType === "distance") {
+      searchDistance = this.props.isoline.radiusMagnitude;
+    } else if (this.props.isoline.rangeType === "time") {
+      if (this.props.isoline.transportMode === "pedestrian") {
+        searchDistance = this.props.isoline.radiusMagnitude * WALKING_SPEED;
+      } else if (
+        this.props.isoline.transportMode === "car" ||
+        this.props.isoline.transportMode === "truck"
+      ) {
+        searchDistance = this.props.isoline.radiusMagnitude * DRIVING_SPEED;
+      }
+    }
     return (
       <View>
         {this.props.chosenNearbyPlaces !== null ? (
-          <View>
+          <View style={styles.container}>
             <MapView
               showsUserLocation
               followsUserLocation
@@ -68,10 +84,12 @@ class Map extends Component {
                 />
               ) : null}
               {this.props.waypointsRoute.decodedPoints.length !== 0 ? (
-                <Polyline
+                <AnimatedPolyline
                   coordinates={this.props.waypointsRoute.decodedPoints}
                   strokeColors={["hotpink"]}
                   strokeWidth={3}
+                  interval={1}
+                  steps={1}
                 />
               ) : null}
               {/* <MapViewDirections
@@ -94,18 +112,28 @@ class Map extends Component {
                   };
                 })}
               /> */}
+              <Circle
+                center={{
+                  latitude: this.props.initialRegion.latitude,
+                  longitude: this.props.initialRegion.longitude,
+                }}
+                radius={searchDistance}
+              />
             </MapView>
 
             {/* <TouchableOpacity style={styles.button}> */}
-            <Fab
+            <View
               style={{
-                position: "absolute",
-                top: "0%",
+                position: "absolute", //use absolute position to show button on top of the map
+                top: "0%", //for center align
               }}
-              getChosenNearbyPlaces={this.props.getChosenNearbyPlaces}
-              saveMap={this.props.saveMap}
-              watchForLocationChanges={this.props.watchForLocationChanges}
-            />
+            >
+              <Fab
+                getChosenNearbyPlaces={this.props.getChosenNearbyPlaces}
+                saveMap={this.props.saveMap}
+                watchForLocationChanges={this.props.watchForLocationChanges}
+              />
+            </View>
 
             {this.props.trackingUserBool ? (
               <View
@@ -113,6 +141,7 @@ class Map extends Component {
                   position: "absolute",
                   top: "0%",
                   left: "70%",
+                  zIndex: 10,
                 }}
               >
                 <UserTrack
@@ -150,12 +179,18 @@ export default Map;
 const styles = StyleSheet.create({
   container: {
     // ...StyleSheet.absoluteFillObject,
-  },
-  mapStyle: {
-    ...StyleSheet.absoluteFillObject,
     width: Dimensions.get("window").width,
 
     height: Dimensions.get("window").height,
+    // flex: 1,
+  },
+  mapStyle: {
+    // ...StyleSheet.absoluteFillObject,
+    flex: 1,
+
+    // width: Dimensions.get("window").width,
+
+    // height: Dimensions.get("window").height,
 
     // width: Dimensions.get("window").width,
 

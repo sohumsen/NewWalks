@@ -10,7 +10,9 @@ import {
   Input,
   Button,
   Text,
+  
 } from "native-base";
+import {View} from 'react-native'
 
 export default class PickerWithIcon extends Component {
   render() {
@@ -55,13 +57,19 @@ export default class PickerWithIcon extends Component {
                 }
               />
             </Item>
-            
-            <Item regular>
-              <Button onPress={()=>{this.props.submitSettings()}}>
-                <Text>Go!</Text>
+
+            <View style={{
+              position:"relative",
+              left:"25%"
+            }}>
+            <Button onPress={()=>{this.props.submitSettings()}}>
+                <Text>APPLY CHANGES</Text>
                 <Icon name="arrow-forward" />
               </Button>
-            </Item>
+
+            </View>
+            
+            
           </Form>
         </Content>
       </Container>

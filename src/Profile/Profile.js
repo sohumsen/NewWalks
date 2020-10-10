@@ -47,7 +47,6 @@ export default class Profile extends Component {
       mapData.splice(idx, 1);
 
       // let mapData=this.state.mapData.filter(mapObj=>mapObj.)
-      // console.log(this.state.mapData)
       // delete this.state.mapData[key]
       this.setState({ mapData: mapData });
       if (value !== null) {
