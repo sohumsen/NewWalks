@@ -16,6 +16,11 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-3651117412361356~1507842038"
+      }
+    },
     "ios": {
       "supportsTablet": true,
       "loadJSInBackgroundExperimental": true,
@@ -24,6 +29,9 @@
         "NSLocationWhenInUseUsageDescription": "App would like to access your current location to determine",
         "NSLocationAlwaysUsageDescription": "App would like to access your current location",
         "NSCameraUsageDescription": "App would like to access your Camera"
+      },
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-3651117412361356~1507842038" 
       }
     },
     "web": {

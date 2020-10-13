@@ -13,6 +13,8 @@ web-build/
 
 GOOGLE_API_KEY.js
 HERE_API_KEY.js
+app_id.txt
+app.json
 
 
 # macOS

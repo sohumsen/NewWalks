@@ -7,7 +7,6 @@ import { Card, CardItem, Body, Text, Content } from "native-base";
 export default class CardImageExample extends Component {
   render() {
     return (
-      <Content>
         <List>
           {this.props.mapData.length !== 0 ? (
             this.props.mapData.map((mapObj, i) => {
@@ -33,7 +32,6 @@ export default class CardImageExample extends Component {
             </Card>
           )}
         </List>
-      </Content>
     );
   }
 }

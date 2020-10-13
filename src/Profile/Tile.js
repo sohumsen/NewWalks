@@ -22,13 +22,13 @@ export default class Tile extends Component {
     let url =
       "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
       queryParams;
-    console.log(url);
 
     fetch(url)
       .then((response) => response.blob())
       .then((images) => {
         // let url = URL.createObjectURL(images);
 
+ 
         this.setState({
           image: (
             <Image
@@ -40,6 +40,11 @@ export default class Tile extends Component {
               style={{ width: 400, height: 200 }}
             />
           ),
+        });
+        Toast.show({
+          text: "Successful!",
+          buttonText: "Okay",
+          type: "success",
         });
       })
 

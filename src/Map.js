@@ -150,12 +150,12 @@ class Map extends Component {
                 />
               </View>
             ) : null}
-
+            {/* 
             <Card
               style={{
                 position: "absolute",
                 top: "0%",
-                left: "30%",
+                left: "20%",
               }}
             >
               <CardItem>
@@ -164,7 +164,38 @@ class Map extends Component {
               <CardItem>
                 <Text>Time: {this.props.waypointsRoute.routeDuration}</Text>
               </CardItem>
-            </Card>
+            </Card> */}
+            <View
+              style={{
+                position: "absolute",
+                top: "0%",
+                right: "45%",
+              }}
+            >
+              <Text>Distance: {this.props.waypointsRoute.routeDistance}</Text>
+
+              <Text>Time: {this.props.waypointsRoute.routeDuration}</Text>
+            </View>
+
+            <View
+              style={{
+                position: "absolute",
+                top: "0%",
+                right: "5%",
+              }}
+            >
+              <Text>
+                Mode:{" "}
+                {this.props.isoline.transportMode.charAt(0).toUpperCase() +
+                  this.props.isoline.transportMode.slice(1)}
+              </Text>
+              <Text>
+                {this.props.isoline.rangeType.charAt(0).toUpperCase() +
+                  this.props.isoline.rangeType.slice(1)}
+                : {this.props.isoline.radiusMagnitude}
+                {this.props.isoline.rangeType === "distance" ? "m" : "s"}
+              </Text>
+            </View>
 
             {/* </TouchableOpacity> */}
           </View>

@@ -129,13 +129,35 @@ export default class App extends React.Component {
 
     //  prevLatLng: {},
   };
+  componentWillUnmount() {
+    this.storeMapIfNecessary();
+  }
+  storeMapIfNecessary = () => {
+    const _retrieveAllData = async () => {
+      try {
+        const value = await AsyncStorage.getAllKeys();
+        if (value.length === 0) {
+          this.saveMap();
+        }
+      } catch (error) {
+        // Error retrieving data
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        });
+      }
+    };
+
+    _retrieveAllData();
+  };
   async componentDidMount() {
     // this.getCurrentLocation()
     // this.getAllNearbyPlaces();
     // this.getChosenNearbyPlaces();
     this.getRecentMapFromDB();
     // this.watchForLocationChanges();
-    this.getIsoline();
+    // this.getIsoline();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -191,7 +213,6 @@ export default class App extends React.Component {
           });
           isoline.encodedIsoline = data.isolines[0].polygons[0].outer;
           isoline.decodedIsoline = decodedIsoline;
-
           this.setState({ isoline: isoline });
         });
       })
@@ -230,6 +251,7 @@ export default class App extends React.Component {
   };
 
   getAllNearbyPlaces = () => {
+    // this.getIsoline();
     let radiusMagnitude = this.state.isoline.radiusMagnitude;
 
     let searchDistance = 0;
@@ -287,6 +309,7 @@ export default class App extends React.Component {
           nearbyPlaces.allNearbyPlaces = allNearbyPlaces;
           this.setState({ nearbyPlaces: nearbyPlaces }, () => {
             this.getChosenNearbyPlaces();
+            // _callback()
           });
         });
       })
@@ -378,17 +401,13 @@ export default class App extends React.Component {
           // //   if (decoded.indexOf(decoded[i].)!==)
 
           // // }
-          // console.log(c)
           // var valueArr = decoded.map(function latitude(item) {
           //   return item.latitude;
           // });
 
-          // console.log(valueArr.length)
-
           // var isDuplicate = valueArr.some(function (item, idx) {
           //   return valueArr.indexOf(item) ;
           // });
-          // console.log(isDuplicate);
 
           let waypointsRoute = { ...this.state.waypointsRoute };
 
@@ -472,6 +491,7 @@ export default class App extends React.Component {
           userTrack: this.state.userTrack,
         };
         await AsyncStorage.setItem(dateNow, JSON.stringify(mapObj));
+
         Toast.show({
           text: "Saved map",
           buttonText: "Okay",
@@ -513,7 +533,10 @@ export default class App extends React.Component {
         if (value.length !== 0) {
           _retrieveData(value[0]);
         } else {
+          //has no map
+
           this.getAllNearbyPlaces();
+          this.getIsoline();
         }
       } catch (error) {
         // Error retrieving data
