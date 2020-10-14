@@ -47,7 +47,8 @@ class Map extends Component {
     }
     return (
       <View>
-        {this.props.chosenNearbyPlaces !== null ? (
+        {this.props.chosenNearbyPlaces !== null ||
+        this.props.initialRegion !== null ? (
           <View style={styles.container}>
             <MapView
               showsUserLocation
@@ -58,16 +59,18 @@ class Map extends Component {
               provider={PROVIDER_GOOGLE}
               region={this.props.initialRegion}
             >
-              {this.props.chosenNearbyPlaces.map((nearbyPlaces, i) => (
-                <Marker
-                  key={i}
-                  coordinate={{
-                    latitude: nearbyPlaces.lat,
-                    longitude: nearbyPlaces.lng,
-                  }}
-                  title={nearbyPlaces.name}
-                />
-              ))}
+              {this.props.chosenNearbyPlaces !== null
+                ? this.props.chosenNearbyPlaces.map((nearbyPlaces, i) => (
+                    <Marker
+                      key={i}
+                      coordinate={{
+                        latitude: nearbyPlaces.lat,
+                        longitude: nearbyPlaces.lng,
+                      }}
+                      title={nearbyPlaces.name}
+                    />
+                  ))
+                : null}
               <Polygon
                 coordinates={this.props.isoline.decodedIsoline}
                 strokeColor="blue" // fallback for when `strokeColors` is not supported by the map-provider
@@ -84,7 +87,7 @@ class Map extends Component {
                 />
               ) : null}
               {this.props.waypointsRoute.decodedPoints.length !== 0 ? (
-                <AnimatedPolyline
+                <Polyline
                   coordinates={this.props.waypointsRoute.decodedPoints}
                   strokeColors={["hotpink"]}
                   strokeWidth={3}
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
     // ...StyleSheet.absoluteFillObject,
     width: Dimensions.get("window").width,
 
-    height: Dimensions.get("window").height,
+    height: Dimensions.get("window").height - 140,
     // flex: 1,
   },
   mapStyle: {

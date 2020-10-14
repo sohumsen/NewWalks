@@ -12,6 +12,13 @@ export default class AnimatedPolyline extends Component {
   componentDidMount() {
     this._animate(this.props.coordinates);
   }
+//   static getDerivedStateFromProps(nextProps){
+//     // if (nextProps.coordinates !== this.props.coordinates) {
+//     //   this._animate(nextProps.coordinates);
+//     // }
+//     console.log()
+//   return null;
+//  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.coordinates !== this.props.coordinates) {
       this._animate(nextProps.coordinates);

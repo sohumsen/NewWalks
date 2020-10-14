@@ -11,14 +11,17 @@ import {
   Body,
   Right,
   Switch,
-  Title, Toast
+  Title,
+  Toast,
 } from "native-base";
 import MapImages from "./MapImages";
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Dimensions, View } from "react-native";
+import { AdMobBanner } from "expo-ads-admob";
 export default class Profile extends Component {
   state = {
     showNavigate: false,
     mapData: null,
+    sortBy: "distance",
   };
   componentDidMount() {
     this.importData();
@@ -70,9 +73,67 @@ export default class Profile extends Component {
     this.props.setNewMap(mapData[idx][key]);
   };
 
+  sortMapList = (sortBy) => {
+    let mapData = [...this.state.mapData];
+    let sortedMapData = [];
+
+    if (sortBy === "distance") {
+      sortedMapData = mapData.sort((a, b) => {
+        if (
+         ( parseFloat(
+            b.waypointsRoute.routeDistance[
+              b.waypointsRoute.routeDistance.substring(
+                0,
+                b.waypointsRoute.routeDistance.indexOf(" ")
+              )
+            ]
+          ) -
+          parseFloat(
+            b.waypointsRoute.routeDistance[
+              b.waypointsRoute.routeDistance.substring(
+                0,
+                b.waypointsRoute.routeDistance.indexOf(" ")
+              )
+            ]
+          ))>0
+        )
+          console.log("dhfsj");
+      });
+    } else if (sortBy === "time") {
+      sortedMapData = mapData.sort(
+        (a, b) =>
+          b.waypointsRoute.routeDuration - a.waypointsRoute.routeDuration
+      );
+    } else if (sortBy === "radius") {
+      sortedMapData = mapData.sort(
+        (a, b) => b.isoline.radiusMagnitude - a.isoline.radiusMagnitude
+      );
+    } else if (sortBy === "transport") {
+      sortedMapData = mapData.sort(
+        (a, b) => b.isoline.transportMode - a.isoline.transportMode
+      );
+    } else if (sortBy === "rangeType") {
+      sortedMapData = mapData.sort(
+        (a, b) => b.isoline.rangeType - a.isoline.rangeType
+      );
+    } else if (sortBy === "date") {
+      sortedMapData = mapData.sort(
+        (a, b) => b.isoline.rangeType - a.isoline.rangeType
+      );
+    }
+
+    console.log(sortedMapData);
+  };
+
   render() {
+    console.log(this.state.mapData);
     return (
-      <Content>
+      <View
+        style={{
+          width: "100%",
+          height: Dimensions.get("window").height - 140,
+        }}
+      >
         {this.state.mapData !== null ? (
           <MapImages
             mapData={this.state.mapData}
@@ -80,7 +141,20 @@ export default class Profile extends Component {
             replayMap={this.replayMap}
           />
         ) : null}
-      </Content>
+        <AdMobBanner
+          style={{
+            position: "absolute",
+            bottom: 0,
+          }}
+          bannerSize="smartBannerPortrait"
+          testDeviceID="EMULATOR"
+          adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+          servePersonalizedAds // true or false
+          onDidFailToReceiveAdWithError={(e) => {
+            console.log(e);
+          }}
+        />
+      </View>
     );
   }
 }

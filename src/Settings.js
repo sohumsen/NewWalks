@@ -62,6 +62,9 @@ export default class ListIconExample extends Component {
               radiusMagnitude={this.props.radiusMagnitude}
               handleSettingsInputChange={this.props.handleSettingsInputChange}
               submitSettings={this.props.submitSettings}
+
+              numberOfRequstsByUser={this.props.numberOfRequstsByUser}
+              onChangeNumberOfRequstsByUser={this.props.onChangeNumberOfRequstsByUser}
             />
           ) : null}
         </View>
@@ -77,7 +80,7 @@ export default class ListIconExample extends Component {
 
         <AdMobBanner
           style={styles.bottomBanner}
-          bannerSize="smartBannerLandscape"
+          bannerSize="smartBannerPortrait"
           testDeviceID="EMULATOR"
           adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
           servePersonalizedAds // true or false

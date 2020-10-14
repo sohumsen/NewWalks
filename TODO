@@ -1,9 +1,10 @@
-Format UI
 add splash screen
 make map view around points
-get all nearbyplaces take into account time or distance
-format ad
 search past maps
+get permissions for location
+on first mount, dont load from db if initial region isnt same
+change -140 to percentage maybe
+
 ===
 utilise vehicle metrics possibly
 keep track of distance travelled

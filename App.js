@@ -44,10 +44,15 @@ export default class App extends React.Component {
     isReady: false,
     selectedFooterTab: "Map",
     trackingUserBool: false,
+    numberOfRequstsByUser: 0,
 
     initialRegion: {
-      latitude: 51.30219236492249,
-      longitude: -0.5825332310526248,
+      // latitude: 51.30219236492249,
+      // longitude: -0.5825332310526248,
+      // latitudeDelta: LATITUDE_DELTA,
+      // longitudeDelta: LONGITUDE_DELTA,
+      latitude: 2,
+      longitude: 2,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     },
@@ -153,11 +158,14 @@ export default class App extends React.Component {
   };
   async componentDidMount() {
     // this.getCurrentLocation()
-    // this.getAllNearbyPlaces();
     // this.getChosenNearbyPlaces();
-    this.getRecentMapFromDB();
+
+    // this.getRecentMapFromDB();
+    this.getCurrentLocation();
+    this.getAllNearbyPlaces();
+
     // this.watchForLocationChanges();
-    // this.getIsoline();
+    this.getIsoline();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -243,9 +251,15 @@ export default class App extends React.Component {
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
         };
-        this.setState({ region: initialRegion });
+        console.log(initialRegion);
+        this.setState({ initialRegion: initialRegion });
       },
-      (error) => alert(JSON.stringify(error)),
+      (error) =>
+        Toast.show({
+          text: "Oops, something went wrong",
+          buttonText: "Okay",
+          type: "danger",
+        }),
       { enableHighAccuracy: true, timeout: 20000 }
     );
   };
@@ -298,19 +312,27 @@ export default class App extends React.Component {
 
         // Examine the text in the response
         response.json().then((data) => {
-          let allNearbyPlaces = data.results.map((place) => {
-            return {
-              lat: place.geometry.location.lat,
-              lng: place.geometry.location.lng,
-              name: place.name,
-            };
-          });
-          let nearbyPlaces = { ...this.state.nearbyPlaces };
-          nearbyPlaces.allNearbyPlaces = allNearbyPlaces;
-          this.setState({ nearbyPlaces: nearbyPlaces }, () => {
-            this.getChosenNearbyPlaces();
-            // _callback()
-          });
+          if (data.results.length !== 0) {
+            let allNearbyPlaces = data.results.map((place) => {
+              return {
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng,
+                name: place.name,
+              };
+            });
+            let nearbyPlaces = { ...this.state.nearbyPlaces };
+            nearbyPlaces.allNearbyPlaces = allNearbyPlaces;
+            this.setState({ nearbyPlaces: nearbyPlaces }, () => {
+              this.getChosenNearbyPlaces();
+              // _callback()
+            });
+          } else {
+            Toast.show({
+              text: "Oops, try increasing the distance in settings",
+              buttonText: "Okay",
+              type: "danger",
+            });
+          }
         });
       })
       .catch((err) => {
@@ -386,9 +408,11 @@ export default class App extends React.Component {
     )
       .then((response) => {
         if (response.status !== 200) {
-          alert(
-            "Looks like there was a problem. Status Code: " + response.status
-          );
+          Toast.show({
+            text: "Oops, something went wrong Code: " + response.status,
+            buttonText: "Okay",
+            type: "danger",
+          });
           return;
         }
 
@@ -688,7 +712,6 @@ export default class App extends React.Component {
     //     saveMap={this.saveMap}
     //   />
     // );
-
     return (
       <Root>
         <Container>
@@ -725,6 +748,10 @@ export default class App extends React.Component {
                 radiusMagnitude={this.state.isoline.radiusMagnitude}
                 rangeType={this.state.isoline.rangeType}
                 transportMode={this.state.isoline.transportMode}
+                numberOfRequstsByUser={this.state.numberOfRequstsByUser}
+                onChangeNumberOfRequstsByUser={(val) => {
+                  this.setState({ numberOfRequstsByUser: val });
+                }}
                 handleSettingsInputChange={this.handleSettingsInputChange}
                 submitSettings={this.submitSettings}
               />

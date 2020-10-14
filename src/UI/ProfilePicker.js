@@ -14,7 +14,6 @@ import {
 import { View } from "react-native";
 import Ad from "./Ad";
 
-const MAX_NUMBER_OF_FREE_REQUESTS = 3; 
 
 
 export default class PickerWithIcon extends Component {
@@ -22,7 +21,6 @@ export default class PickerWithIcon extends Component {
     showAd: false,
   };
   render() {
-    console.log(this.props.numberOfRequstsByUser);
     return (
       <Form>
         <Item picker>
@@ -52,43 +50,10 @@ export default class PickerWithIcon extends Component {
             <Picker.Item label="Car" value="car" />
             <Picker.Item label="Truck" value="truck" />
           </Picker>
-          <Input
-            keyboardType="numeric"
-            value={this.props.radiusMagnitude.toString()}
-            onChangeText={(val) =>
-              this.props.handleSettingsInputChange("radiusMagnitude", val)
-            }
-          />
+        
         </Item>
 
-        <View
-          style={{
-            position: "relative",
-            left: "25%",
-          }}
-        >
-          <Button
-            onPress={() => {
-              this.setState({ showAd: true });
-              this.props.onChangeNumberOfRequstsByUser(
-                this.props.numberOfRequstsByUser + 1
-              );
-              this.props.numberOfRequstsByUser < MAX_NUMBER_OF_FREE_REQUESTS
-                ? this.props.submitSettings()
-                : () => {
-                    console.log("not allowed");
-                  };
-              // this.props.submitSettings();
-            }}
-          >
-            <Text>APPLY CHANGES</Text>
-            <Icon name="arrow-forward" />
-          </Button>
-
-          {this.state.showAd && this.props.numberOfRequstsByUser > MAX_NUMBER_OF_FREE_REQUESTS ? (
-            <Ad onAdClose={this.props.submitSettings} />
-          ) : null}
-        </View>
+       
       </Form>
     );
   }

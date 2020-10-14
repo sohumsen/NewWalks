@@ -1,13 +1,22 @@
-import { AdMobBanner, AdMobInterstitial, AdMobRewarded } from "expo-ads-admob";
+import { AdMobBanner, AdMobInterstitial } from "expo-ads-admob";
 import React, { Component } from "react";
 
 class Ad extends Component {
   state = {};
   async componentDidMount() {
-    AdMobRewarded.setAdUnitID("ca-app-pub-3940256099942544/1712485313");
-    // await AdMobRewarded.requestAdAsync({ servePersonalizedAds: false });
-    // await AdMobInterstitial.showAdAsync();
+    AdMobInterstitial.setAdUnitID("ca-app-pub-3940256099942544/5135589807");
+    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false });
+    await AdMobInterstitial.showAdAsync();
+    AdMobInterstitial.addEventListener("interstitialDidClose",()=>{
+
+        this.props.onAdClose()
+        console.log("closd")
+    })
   }
+
+//   componentWillUnmount() {
+//     AdMobInterstitial.removeAllListeners();
+//     }
   render() {
     return (
         <AdMobBanner
