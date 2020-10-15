@@ -1,4 +1,6 @@
 import React from "react";
+import * as SplashScreen from 'expo-splash-screen';
+
 import { AppLoading } from "expo";
 import { Container, Toast } from "native-base";
 import * as Font from "expo-font";
@@ -8,6 +10,7 @@ import Map from "./src/Map";
 import Settings from "./src/Settings";
 import Profile from "./src/Profile/Profile";
 import { AsyncStorage, Dimensions } from "react-native";
+import * as Location from "expo-location";
 
 import Constants from "expo-constants";
 import { Root } from "native-base";
@@ -28,6 +31,12 @@ import Newmap2 from "./src/newmap2";
 import decoderHERE from "./src/utils/decoderHERE";
 import deltaGenerate from "./src/utils/deltaGenerate";
 import decoderGOOGLE from "./src/utils/decoderGOOGLE";
+import {
+  getBounds,
+  getDistance,
+  getPreciseDistance,
+  isPointInPolygon,
+} from "geolib";
 const { width, height } = Dimensions.get("window");
 
 const SCREEN_HEIGHT = height;
@@ -35,7 +44,7 @@ const SCREEN_WIDTH = width;
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0422;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-const LOCATIONS_CHOSEN = 2;
+const LOCATIONS_CHOSEN = 3;
 const WALKING_SPEED = 0.6; //m/s
 const DRIVING_SPEED = 7; //m/s
 
@@ -47,14 +56,14 @@ export default class App extends React.Component {
     numberOfRequstsByUser: 0,
 
     initialRegion: {
-      // latitude: 51.30219236492249,
-      // longitude: -0.5825332310526248,
-      // latitudeDelta: LATITUDE_DELTA,
-      // longitudeDelta: LONGITUDE_DELTA,
-      latitude: 2,
-      longitude: 2,
+      latitude: 51.30219236492249,
+      longitude: -0.5825332310526248,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
+      // latitude: 2,
+      // longitude: 2,
+      // latitudeDelta: LATITUDE_DELTA,
+      // longitudeDelta: LONGITUDE_DELTA,
     },
 
     nearbyPlaces: {
@@ -134,9 +143,9 @@ export default class App extends React.Component {
 
     //  prevLatLng: {},
   };
-  componentWillUnmount() {
-    this.storeMapIfNecessary();
-  }
+  // componentWillUnmount() {
+  //   this.storeMapIfNecessary();
+  // }
   storeMapIfNecessary = () => {
     const _retrieveAllData = async () => {
       try {
@@ -161,11 +170,17 @@ export default class App extends React.Component {
     // this.getChosenNearbyPlaces();
 
     // this.getRecentMapFromDB();
+    try {
+      await SplashScreen.preventAutoHideAsync();
+    } catch (e) {
+      console.warn(e);
+    }
     this.getCurrentLocation();
-    this.getAllNearbyPlaces();
+
+  
+    // this.watchForLocationChanges();
 
     // this.watchForLocationChanges();
-    this.getIsoline();
 
     await Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
@@ -221,7 +236,9 @@ export default class App extends React.Component {
           });
           isoline.encodedIsoline = data.isolines[0].polygons[0].outer;
           isoline.decodedIsoline = decodedIsoline;
-          this.setState({ isoline: isoline });
+          this.setState({ isoline: isoline }, () => {
+            this.getChosenNearbyPlaces();
+          });
         });
       })
       .catch((err) => {
@@ -239,33 +256,60 @@ export default class App extends React.Component {
     this.setState({ isoline: isoline });
   };
 
-  getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        var lat = parseFloat(position.coords.latitude);
-        var long = parseFloat(position.coords.longitude);
+  // getCurrentLocation = () => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       var lat = parseFloat(position.coords.latitude);
+  //       var long = parseFloat(position.coords.longitude);
 
-        var initialRegion = {
-          latitude: lat,
-          longitude: long,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA,
-        };
-        console.log(initialRegion);
-        this.setState({ initialRegion: initialRegion });
-      },
-      (error) =>
+  //       var initialRegion = {
+  //         latitude: lat,
+  //         longitude: long,
+  //         latitudeDelta: LATITUDE_DELTA,
+  //         longitudeDelta: LONGITUDE_DELTA,
+  //       };
+  //       this.setState({ initialRegion: initialRegion }, () => {
+  //         this.getAllNearbyPlaces();
+  //         this.getIsoline();
+  //       });
+  //     },
+  //     (error) =>
+  //       Toast.show({
+  //         text: "Oops, something went wrong",
+  //         buttonText: "Okay",
+  //         type: "danger",
+  //       }),
+  //     { enableHighAccuracy: true, timeout: 20000 }
+  //   );
+  // };
+
+  getCurrentLocation = () => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
         Toast.show({
-          text: "Oops, something went wrong",
+          text: "Permission to access location was denied",
           buttonText: "Okay",
           type: "danger",
-        }),
-      { enableHighAccuracy: true, timeout: 20000 }
-    );
+        });
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      let initialRegion = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      };
+
+      this.setState({ initialRegion: initialRegion }, () => {
+        this.getAllNearbyPlaces();
+      });
+    })();
   };
 
   getAllNearbyPlaces = () => {
-    // this.getIsoline();
     let radiusMagnitude = this.state.isoline.radiusMagnitude;
 
     let searchDistance = 0;
@@ -323,12 +367,12 @@ export default class App extends React.Component {
             let nearbyPlaces = { ...this.state.nearbyPlaces };
             nearbyPlaces.allNearbyPlaces = allNearbyPlaces;
             this.setState({ nearbyPlaces: nearbyPlaces }, () => {
-              this.getChosenNearbyPlaces();
+              this.getIsoline();
               // _callback()
             });
           } else {
             Toast.show({
-              text: "Oops, try increasing the distance in settings",
+              text: "Error: try increasing the distance in settings",
               buttonText: "Okay",
               type: "danger",
             });
@@ -347,22 +391,54 @@ export default class App extends React.Component {
     var tempArrIdx = [];
     let newdata = [];
 
-    if (this.state.nearbyPlaces.allNearbyPlaces.length >= LOCATIONS_CHOSEN) {
-      while (tempArrIdx.length <= LOCATIONS_CHOSEN) {
-        var r = Math.floor(
-          Math.random() * this.state.nearbyPlaces.allNearbyPlaces.length
-        );
-        if (tempArrIdx.indexOf(r) === -1) {
-          newdata.push(this.state.nearbyPlaces.allNearbyPlaces[r]);
-          tempArrIdx.push(r);
-        }
-      }
-      let nearbyPlaces = { ...this.state.nearbyPlaces };
-
-      nearbyPlaces.chosenNearbyPlaces = newdata;
-      this.setState({ nearbyPlaces: nearbyPlaces }, () => {
-        this.getWaypointRoute();
+    if (this.state.nearbyPlaces.allNearbyPlaces === null) {
+      Toast.show({
+        text: "Error: no nearby places found",
+        buttonText: "Okay",
+        type: "danger",
       });
+    } else {
+      if (this.state.nearbyPlaces.allNearbyPlaces.length >= LOCATIONS_CHOSEN) {
+        while (tempArrIdx.length <= LOCATIONS_CHOSEN) {
+          var r = Math.floor(
+            Math.random() * this.state.nearbyPlaces.allNearbyPlaces.length
+          );
+          if (
+            tempArrIdx.indexOf(r) === -1 &&
+            isPointInPolygon(
+              this.state.nearbyPlaces.allNearbyPlaces[r],
+              this.state.isoline.decodedIsoline
+            )
+          ) {
+            newdata.push(this.state.nearbyPlaces.allNearbyPlaces[r]);
+
+            tempArrIdx.push(r);
+          }
+        }
+        let nearbyPlaces = { ...this.state.nearbyPlaces };
+        let initialRegion = { ...this.state.initialRegion };
+
+        let { maxLat, minLat } = getBounds(newdata);
+        console.log(deltaGenerate(newdata));
+        // console.log(maxLat,minLat,"=",maxLat-minLat)
+        initialRegion.latitudeDelta = deltaGenerate(newdata).latitudeDelta;
+        initialRegion.longitudeDelta =
+        deltaGenerate(newdata).longitudeDelta;
+
+        nearbyPlaces.chosenNearbyPlaces = newdata;
+        this.setState(
+          { nearbyPlaces: nearbyPlaces, initialRegion: initialRegion },
+          () => {
+            this.getWaypointRoute();
+          }
+        );
+      } else {
+        Toast.show({
+          text: "Error: not enough nearby places found",
+          buttonText: "Okay",
+          type: "danger",
+        });
+      }
     }
   };
 
@@ -392,11 +468,23 @@ export default class App extends React.Component {
     let waypoints =
       "&waypoints=" +
       this.state.nearbyPlaces.chosenNearbyPlaces
-        .map(
-          (latLingObj) => latLingObj.lat + "%2C" + latLingObj.lng + "%7Cvia:"
-        )
+        .map((latLingObj, i) => {
+          if (i === this.state.nearbyPlaces.chosenNearbyPlaces.length-1) {
+            return latLingObj.lat + "%2C" + latLingObj.lng;
+          } else {
+            return latLingObj.lat + "%2C" + latLingObj.lng + "%7Cvia:";
+          }
+        })
         .join("");
-
+    console.log(
+      "https://maps.googleapis.com/maps/api/directions/json?" +
+        origin +
+        destination +
+        waypoints +
+        transportMode +
+        "&key=" +
+        GOOGLE_MAPS_APIKEY
+    );
     fetch(
       "https://maps.googleapis.com/maps/api/directions/json?" +
         origin +
@@ -445,6 +533,9 @@ export default class App extends React.Component {
 
           this.setState({
             waypointsRoute: waypointsRoute,
+            isReady: true 
+          },async () => {
+            await SplashScreen.hideAsync();
           });
         });
       })
@@ -560,7 +651,6 @@ export default class App extends React.Component {
           //has no map
 
           this.getAllNearbyPlaces();
-          this.getIsoline();
         }
       } catch (error) {
         // Error retrieving data
@@ -624,71 +714,136 @@ export default class App extends React.Component {
     });
   };
 
+  // watchForLocationChanges = () => {
+  //   this.setState({ trackingUserBool: !this.state.trackingUserBool });
+
+  //   this.watchID = navigator.geolocation.watchPosition(
+  //     (position) => {
+  //       // const {
+  //       //   coordinate,
+  //       //   userRouteCoordinates,
+  //       //   userDistanceTravelled,
+  //       // } = this.state;
+  //       const { latitude, longitude } = position.coords;
+
+  //       const newCoordinate = {
+  //         latitude: latitude,
+  //         longitude: longitude,
+  //       };
+  //       if (Platform.OS === "android") {
+  //         if (this.marker) {
+  //           this.marker._component.animateMarkerToCoordinate(
+  //             newCoordinate,
+  //             500
+  //           );
+  //         }
+  //       }
+  //       // else {
+  //       //   coordinate.timing(newCoordinate).start();
+  //       // }
+
+  //       let initialRegion = { ...this.state.initialRegion };
+  //       initialRegion.latitude = latitude;
+  //       initialRegion.longitude = longitude;
+
+  //       let userTrack = { ...this.state.userTrack };
+  //       userTrack.routeCoordinates = userTrack.routeCoordinates.concat(
+  //         newCoordinate
+  //       );
+  //       userTrack.distanceTravelled =
+  //         userTrack.distanceTravelled + this.calcDistance(newCoordinate);
+
+  //       this.setState({
+  //         initialRegion: initialRegion,
+  //         userTrack: userTrack,
+  //       });
+  //     },
+  //     (error) => {
+  //       Toast.show({
+  //         text: "Oops, something went wrong",
+  //         buttonText: "Okay",
+  //         type: "danger",
+  //       });
+  //     },
+  //     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, accuracy: 0.1 }
+  //   );
+  // };
+
   watchForLocationChanges = () => {
     this.setState({ trackingUserBool: !this.state.trackingUserBool });
+    (async () => {
+      let location = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.BestForNavigation,
+          // timeInterval: 100,
+          distanceInterval: 5,
+        },
+        (loc) => {
+          const newCoordinate = {
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+          };
 
-    this.watchID = navigator.geolocation.watchPosition(
-      (position) => {
-        // const {
-        //   coordinate,
-        //   userRouteCoordinates,
-        //   userDistanceTravelled,
-        // } = this.state;
-        const { latitude, longitude } = position.coords;
+          let prevLatLng = {
+            latitude: this.state.initialRegion.latitude,
+            longitude: this.state.initialRegion.longitude,
+          };
 
-        const newCoordinate = {
-          latitude: latitude,
-          longitude: longitude,
-        };
-        if (Platform.OS === "android") {
-          if (this.marker) {
-            this.marker._component.animateMarkerToCoordinate(
-              newCoordinate,
-              500
-            );
-          }
+          // console.log(loc.coords.latitude, this.state.initialRegion.latitude);
+          // console.log(this.calcDistance(newCoordinate,prevLatLng))
+          let initialRegion = { ...this.state.initialRegion };
+          initialRegion.latitude = loc.coords.latitude;
+          initialRegion.longitude = loc.coords.longitude;
+          let userTrack = { ...this.state.userTrack };
+          userTrack.routeCoordinates = userTrack.routeCoordinates.concat(
+            newCoordinate
+          );
+          userTrack.distanceTravelled =
+            userTrack.distanceTravelled +
+            getDistance(newCoordinate, prevLatLng, 0.01);
+
+          this.setState({
+            initialRegion: initialRegion,
+            userTrack: userTrack,
+          });
         }
-        // else {
-        //   coordinate.timing(newCoordinate).start();
-        // }
+      );
+      if (!this.state.trackingUserBool) {
+        location.remove();
+      }
+    })();
+    //     let initialRegion = { ...this.state.initialRegion };
+    //     initialRegion.latitude = latitude;
+    //     initialRegion.longitude = longitude;
 
-        let initialRegion = { ...this.state.initialRegion };
-        initialRegion.latitude = latitude;
-        initialRegion.longitude = longitude;
+    //     let userTrack = { ...this.state.userTrack };
+    //     userTrack.routeCoordinates = userTrack.routeCoordinates.concat(
+    //       newCoordinate
+    //     );
+    //     userTrack.distanceTravelled =
+    //       userTrack.distanceTravelled + this.calcDistance(newCoordinate);
 
-        let userTrack = { ...this.state.userTrack };
-        userTrack.routeCoordinates = userTrack.routeCoordinates.concat(
-          newCoordinate
-        );
-        userTrack.distanceTravelled =
-          userTrack.distanceTravelled + this.calcDistance(newCoordinate);
-
-        this.setState({
-          initialRegion: initialRegion,
-          userTrack: userTrack,
-        });
-      },
-      (error) => {
-        Toast.show({
-          text: "Oops, something went wrong",
-          buttonText: "Okay",
-          type: "danger",
-        });
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, accuracy: 0.1 }
-    );
+    //     this.setState({
+    //       initialRegion: initialRegion,
+    //       userTrack: userTrack,
+    //     });
+    //   },
+    //   (error) => {
+    //     Toast.show({
+    //       text: "Oops, something went wrong",
+    //       buttonText: "Okay",
+    //       type: "danger",
+    //     });
+    //   },
+    //   { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, accuracy: 0.1 }
+    // );
   };
-  calcDistance = (newLatLng) => {
-    let prevLatLng = {
-      lat: this.state.initialRegion.latitude,
-      lng: this.state.initialRegion.longitude,
-    };
+  calcDistance = (newLatLng, prevLatLng) => {
     return haversine(prevLatLng, newLatLng) || 0;
   };
   submitSettings = () => {
     this.getAllNearbyPlaces();
     this.handleChangeFooterTab("Map");
-    this.getIsoline();
   };
 
   render() {
@@ -696,7 +851,7 @@ export default class App extends React.Component {
     // var directions = new GDirections ();
 
     if (!this.state.isReady) {
-      return <AppLoading />;
+      return null
     }
 
     // const Map =()=> (

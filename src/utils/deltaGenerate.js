@@ -1,21 +1,21 @@
-export function getRegionForCoordinates(points) {
+export default function deltaGenerate(points) {
   // points should be an array of { latitude: X, longitude: Y }
   let minX, maxX, minY, maxY;
 
   // init first point
   ((point) => {
-    minX = point.latitude;
-    maxX = point.latitude;
-    minY = point.longitude;
-    maxY = point.longitude;
+    minX = point.lat;
+    maxX = point.lat;
+    minY = point.lng;
+    maxY = point.lng;
   })(points[0]);
 
   // calculate rect
   points.map((point) => {
-    minX = Math.min(minX, point.latitude);
-    maxX = Math.max(maxX, point.latitude);
-    minY = Math.min(minY, point.longitude);
-    maxY = Math.max(maxY, point.longitude);
+    minX = Math.min(minX, point.lat);
+    maxX = Math.max(maxX, point.lat);
+    minY = Math.min(minY, point.lng);
+    maxY = Math.max(maxY, point.lng);
   });
 
   const midX = (minX + maxX) / 2;
@@ -26,7 +26,7 @@ export function getRegionForCoordinates(points) {
   return {
     latitude: midX,
     longitude: midY,
-    latitudeDelta: deltaX,
-    longitudeDelta: deltaY,
+    latitudeDelta: deltaX*2.5,
+    longitudeDelta: deltaY*2.5,
   };
 }

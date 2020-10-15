@@ -10,17 +10,40 @@ import {
   Input,
   Button,
   Text,
+  Toast,
 } from "native-base";
 import { View } from "react-native";
 import Ad from "./Ad";
 
-const MAX_NUMBER_OF_FREE_REQUESTS = 3; 
+const MAX_NUMBER_OF_FREE_REQUESTS = 1; 
+const MAX_DISTANCE_TO_SEARCH = 20000; 
 
 
 export default class PickerWithIcon extends Component {
   state = {
     showAd: false,
   };
+  validateInput=(radiusMagnitude)=>{
+
+    if(radiusMagnitude>MAX_DISTANCE_TO_SEARCH){
+      Toast.show({
+        text: "Error: Too large a field",
+        buttonText: "Okay",
+        type: "danger",
+      });
+    }else{
+
+      this.props.onChangeNumberOfRequstsByUser(
+        this.props.numberOfRequstsByUser + 1
+      );
+      this.props.numberOfRequstsByUser < MAX_NUMBER_OF_FREE_REQUESTS
+        ? this.props.submitSettings()
+        : () => {
+            console.log("not allowed");
+          };
+    }
+
+  }
   render() {
     console.log(this.props.numberOfRequstsByUser);
     return (
@@ -69,15 +92,8 @@ export default class PickerWithIcon extends Component {
         >
           <Button
             onPress={() => {
-              this.setState({ showAd: true });
-              this.props.onChangeNumberOfRequstsByUser(
-                this.props.numberOfRequstsByUser + 1
-              );
-              this.props.numberOfRequstsByUser < MAX_NUMBER_OF_FREE_REQUESTS
-                ? this.props.submitSettings()
-                : () => {
-                    console.log("not allowed");
-                  };
+              this.validateInput(this.props.radiusMagnitude);
+             
               // this.props.submitSettings();
             }}
           >
@@ -85,7 +101,7 @@ export default class PickerWithIcon extends Component {
             <Icon name="arrow-forward" />
           </Button>
 
-          {this.state.showAd && this.props.numberOfRequstsByUser > MAX_NUMBER_OF_FREE_REQUESTS ? (
+          { this.props.numberOfRequstsByUser > MAX_NUMBER_OF_FREE_REQUESTS ? (
             <Ad onAdClose={this.props.submitSettings} />
           ) : null}
         </View>

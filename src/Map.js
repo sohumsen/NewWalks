@@ -175,9 +175,9 @@ class Map extends Component {
                 right: "45%",
               }}
             >
-              <Text>Distance: {this.props.waypointsRoute.routeDistance}</Text>
+              <Text>Route Distance: {this.props.waypointsRoute.routeDistance}</Text>
 
-              <Text>Time: {this.props.waypointsRoute.routeDuration}</Text>
+              <Text>Route Time: {this.props.waypointsRoute.routeDuration}</Text>
             </View>
 
             <View
