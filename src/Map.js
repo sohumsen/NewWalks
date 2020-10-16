@@ -115,13 +115,13 @@ class Map extends Component {
                   };
                 })}
               /> */}
-              <Circle
+              {/* <Circle
                 center={{
                   latitude: this.props.initialRegion.latitude,
                   longitude: this.props.initialRegion.longitude,
                 }}
                 radius={searchDistance}
-              />
+              /> */}
             </MapView>
 
             {/* <TouchableOpacity style={styles.button}> */}
@@ -175,7 +175,9 @@ class Map extends Component {
                 right: "45%",
               }}
             >
-              <Text>Route Distance: {this.props.waypointsRoute.routeDistance}</Text>
+              <Text>
+                Route Distance: {this.props.waypointsRoute.routeDistance}
+              </Text>
 
               <Text>Route Time: {this.props.waypointsRoute.routeDuration}</Text>
             </View>
@@ -193,9 +195,7 @@ class Map extends Component {
                   this.props.isoline.transportMode.slice(1)}
               </Text>
               <Text>
-                {this.props.isoline.rangeType.charAt(0).toUpperCase() +
-                  this.props.isoline.rangeType.slice(1)}
-                : {this.props.isoline.radiusMagnitude}
+                Range : {this.props.isoline.radiusMagnitude}
                 {this.props.isoline.rangeType === "distance" ? "m" : "s"}
               </Text>
             </View>

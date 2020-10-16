@@ -2,7 +2,9 @@ add splash screen
 make map view around points properly
 watchfor user is not accurate
 keep track of distance travelled
-remove map circle
+get more api keys
+set up app id
+set up permissions
 
 future
 ========

@@ -124,8 +124,8 @@ export default class App extends React.Component {
     },
 
     waypointsRoute: {
-      decodedPoints: "",
       encodedPoints: "",
+      decodedPoints: [],
       routeDuration: "",
       routeDistance: "",
     },
@@ -419,8 +419,8 @@ export default class App extends React.Component {
         let initialRegion = { ...this.state.initialRegion };
 
         let { maxLat, minLat } = getBounds(newdata);
-        console.log(deltaGenerate(newdata));
-        // console.log(maxLat,minLat,"=",maxLat-minLat)
+
+
         initialRegion.latitudeDelta = deltaGenerate(newdata).latitudeDelta;
         initialRegion.longitudeDelta =
         deltaGenerate(newdata).longitudeDelta;
@@ -476,15 +476,7 @@ export default class App extends React.Component {
           }
         })
         .join("");
-    console.log(
-      "https://maps.googleapis.com/maps/api/directions/json?" +
-        origin +
-        destination +
-        waypoints +
-        transportMode +
-        "&key=" +
-        GOOGLE_MAPS_APIKEY
-    );
+   
     fetch(
       "https://maps.googleapis.com/maps/api/directions/json?" +
         origin +
@@ -789,8 +781,6 @@ export default class App extends React.Component {
             longitude: this.state.initialRegion.longitude,
           };
 
-          // console.log(loc.coords.latitude, this.state.initialRegion.latitude);
-          // console.log(this.calcDistance(newCoordinate,prevLatLng))
           let initialRegion = { ...this.state.initialRegion };
           initialRegion.latitude = loc.coords.latitude;
           initialRegion.longitude = loc.coords.longitude;
