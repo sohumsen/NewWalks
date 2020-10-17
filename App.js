@@ -679,6 +679,7 @@ export default class App extends React.Component {
     this.setState({
       selectedFooterTab: "Map",
       trackingUserBool: false,
+      numberOfRequstsByUser: 0,
 
       initialRegion: mapObj.initialRegion,
       nearbyPlaces: mapObj.nearbyPlaces,

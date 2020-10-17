@@ -13,19 +13,33 @@ import {
   Icon,
   Text,
 } from "native-base";
+import { Image, ImageBackground, Platform } from "react-native";
 export default class AnatomyExample extends Component {
   render() {
     return (
       <Container>
-        <Header>
-          <Left>
-          
-          </Left>
-          <Body>
-            <Title>XPLORE</Title>
-          </Body>
-          <Right />
-        </Header>
+        <ImageBackground
+          // source={{
+          //   uri:
+          //     "https://www.nationalgeographic.com/content/dam/ngdotcom/rights-exempt/maps/world-classic-2018-banner-clip-72.jpg",
+          // }}
+          style={{width: "100%", height: 90}}
+          // style={{ height: Platform.OS === "ios" ? 64 : 56, width: null }}
+        >
+          <Header style={{ backgroundColor: "transparent" }}>
+            <Body>
+              <Title>XPLORE</Title>
+              {/* <Image
+              source={{
+                uri:
+                  "https://www.nationalgeographic.com/content/dam/ngdotcom/rights-exempt/maps/world-classic-2018-banner-clip-72.jpg",
+              }}
+              style={{ width: 200, height: 35, resizeMode: "contain" }}
+            /> */}
+            </Body>
+          </Header>
+        </ImageBackground>
+
         <Content>{this.props.children}</Content>
         <Footer>
           <FooterTab>

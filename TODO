@@ -1,13 +1,23 @@
 add splash screen
 make map view around points properly
-watchfor user is not accurate
-keep track of distance travelled
+
 get more api keys
 set up app id
 set up permissions
+change all api costs to new card
+limit api requests
+disable watch user
+remove console logs
+map changes colour
+cant save map
+download all images to local
+get a truck gif
+ad on profile absolute position
 
 future
 ========
 utilise vehicle metrics possibly
 Maybe prevent route repititions
 search past maps
+watchfor user is not accurate
+keep track of distance travelled

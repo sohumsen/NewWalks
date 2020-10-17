@@ -29,7 +29,7 @@ import Ad from "./UI/Ad";
 
 export default class ListIconExample extends Component {
   state = {
-    showNavigate: false,
+    showNavigate: true,
   };
   render() {
 
@@ -45,11 +45,11 @@ export default class ListIconExample extends Component {
           >
             <Left>
               <Button>
-                <Icon active name="navigate" />
+                <Icon active name="settings" />
               </Button>
             </Left>
             <Body>
-              <Text>Navigate</Text>
+              <Text>Settings</Text>
             </Body>
             <Right>
               <Icon active name="arrow-down" />
@@ -66,7 +66,7 @@ export default class ListIconExample extends Component {
               numberOfRequstsByUser={this.props.numberOfRequstsByUser}
               onChangeNumberOfRequstsByUser={this.props.onChangeNumberOfRequstsByUser}
             />
-          ) : null}
+           ) : null} 
         </View>
 
         {/* {this.state.showNavigate ? (

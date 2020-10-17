@@ -131,7 +131,7 @@ export default class Profile extends Component {
       <View
         style={{
           width: "100%",
-          height: Dimensions.get("window").height - 140,
+          // height: Dimensions.get("window").height - 140,
         }}
       >
         {this.state.mapData !== null ? (

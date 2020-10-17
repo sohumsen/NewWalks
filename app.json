@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Xplore",
+    "description":"Route generation app",
     "slug": "Xplore",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,9 +27,8 @@
       "loadJSInBackgroundExperimental": true,
 
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "App would like to access your current location to determine",
-        "NSLocationAlwaysUsageDescription": "App would like to access your current location",
-        "NSCameraUsageDescription": "App would like to access your Camera"
+        "NSLocationWhenInUseUsageDescription": "App would like to access your current location to determine nearby places",
+        "NSLocationAlwaysUsageDescription": "App would like to access your current location to determine nearby places"
       },
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-3651117412361356~1507842038" 

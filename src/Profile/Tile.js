@@ -20,24 +20,21 @@ export default class Tile extends Component {
       "&sensor=true";
 
     let url =
-      "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
+      "http://maps.googleapis.com/maps/api/staticmap?size=250x200" +
       queryParams;
 
     fetch(url)
       .then((response) => response.blob())
       .then((images) => {
-        // let url = URL.createObjectURL(images);
+        let url = URL.createObjectURL(images);
 
- 
         this.setState({
           image: (
             <Image
               source={{
-                uri:
-                  "http://maps.googleapis.com/maps/api/staticmap?size=400x200" +
-                  queryParams,
+                uri: url,
               }}
-              style={{ width: 400, height: 200 }}
+              style={{ width: 250, height: 200 }}
             />
           ),
         });
