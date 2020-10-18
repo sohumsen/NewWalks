@@ -17,8 +17,10 @@ import { Root } from "native-base";
 import { createSwitchNavigator, StackNavigator } from "react-navigation";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import GOOGLE_MAPS_APIKEY from "./GOOGLE_API_KEY";
-import HERE_API_KEY from "./HERE_API_KEY";
+import SOHUM_API_KEY from "./API_KEYS/SOHUM_API_KEY";
+import UNIVARZ_API_KEY from "./API_KEYS/UNIVARZ_API_KEY";
+
+import HERE_API_KEY from "./API_KEYS/HERE_API_KEY";
 import NewMap from "./src/newMap";
 import haversine from "haversine";
 import MapView, {
@@ -175,7 +177,9 @@ export default class App extends React.Component {
     } catch (e) {
       console.warn(e);
     }
-    this.getCurrentLocation();
+
+    this.wait()
+    // this.getCurrentLocation();
 
   
     // this.watchForLocationChanges();
@@ -188,6 +192,14 @@ export default class App extends React.Component {
       ...Ionicons.font,
     });
     this.setState({ isReady: true });
+  }
+  wait=()=>{
+    setTimeout(
+      () => this.setState({ isoline: {} },async () => {
+        await SplashScreen.hideAsync();
+      }), 
+      3000
+    );
   }
 
   getIsoline = () => {
@@ -326,7 +338,7 @@ export default class App extends React.Component {
         searchDistance = radiusMagnitude * DRIVING_SPEED;
       }
     }
-
+    let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
     let queryParams =
       "location=" +
       this.state.initialRegion.latitude +
@@ -335,7 +347,7 @@ export default class App extends React.Component {
       "&radius=" +
       searchDistance +
       "&opennow&key=" +
-      GOOGLE_MAPS_APIKEY;
+      api_choice;
 
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
@@ -476,7 +488,8 @@ export default class App extends React.Component {
           }
         })
         .join("");
-   
+        let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
+
     fetch(
       "https://maps.googleapis.com/maps/api/directions/json?" +
         origin +
@@ -484,7 +497,7 @@ export default class App extends React.Component {
         waypoints +
         transportMode +
         "&key=" +
-        GOOGLE_MAPS_APIKEY
+        api_choice
     )
       .then((response) => {
         if (response.status !== 200) {

@@ -1,6 +1,8 @@
 import { View, Text, Toast } from "native-base";
 import { Image } from "react-native";
-import GOOGLE_API_KEY from "../../GOOGLE_API_KEY";
+import SOHUM_API_KEY from "../../API_KEYS/SOHUM_API_KEY";
+import UNIVARZ_API_KEY from "../../API_KEYS/UNIVARZ_API_KEY";
+
 import React, { Component } from "react";
 export default class Tile extends Component {
   state = {
@@ -11,12 +13,14 @@ export default class Tile extends Component {
   }
 
   getImagePath = () => {
+    let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
+
     let queryParams =
       "&path=enc:" +
       this.props.mapObj[Object.keys(this.props.mapObj)[0]].waypointsRoute
         .encodedPoints +
       "&key=" +
-      GOOGLE_API_KEY +
+      api_choice +
       "&sensor=true";
 
     let url =
@@ -46,7 +50,6 @@ export default class Tile extends Component {
       })
 
       .catch((err) => {
-        console.log(err);
         Toast.show({
           text: "Oops, something went wrong",
           buttonText: "Okay",

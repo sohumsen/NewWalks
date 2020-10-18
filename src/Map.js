@@ -21,7 +21,7 @@ import {
 import MapViewDirections from "react-native-maps-directions";
 import { Card, CardItem, Icon, Input, Item } from "native-base";
 import Config from "./Config";
-import GOOGLE_MAPS_APIKEY from "../GOOGLE_API_KEY";
+import GOOGLE_MAPS_APIKEY from "../API_KEYS/SOHUM_API_KEY";
 import Fab from "./FAB";
 import { Container, Header } from "native-base";
 import { AsyncStorage } from "react-native";

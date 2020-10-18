@@ -32,11 +32,10 @@ export default class ListIconExample extends Component {
     showNavigate: true,
   };
   render() {
-
     return (
       // style={styles.container}
       <View style={styles.container}>
-        <View >
+        <View>
           <ListItem
             icon
             onPress={() => {
@@ -62,11 +61,12 @@ export default class ListIconExample extends Component {
               radiusMagnitude={this.props.radiusMagnitude}
               handleSettingsInputChange={this.props.handleSettingsInputChange}
               submitSettings={this.props.submitSettings}
-
               numberOfRequstsByUser={this.props.numberOfRequstsByUser}
-              onChangeNumberOfRequstsByUser={this.props.onChangeNumberOfRequstsByUser}
+              onChangeNumberOfRequstsByUser={
+                this.props.onChangeNumberOfRequstsByUser
+              }
             />
-           ) : null} 
+          ) : null}
         </View>
 
         {/* {this.state.showNavigate ? (
@@ -85,7 +85,11 @@ export default class ListIconExample extends Component {
           adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
           servePersonalizedAds // true or false
           onDidFailToReceiveAdWithError={(e) => {
-            console.log(e);
+            Toast.show({
+              text: "Oops, something went wrong",
+              buttonText: "Okay",
+              type: "danger",
+            });
           }}
         />
         {/* <Ad/> */}
@@ -102,6 +106,6 @@ const styles = StyleSheet.create({
   container: {
     // width: Dimensions.get("window").width,
     width: "100%",
-    height: Dimensions.get("window").height-140,
+    height: Dimensions.get("window").height - 140,
   },
 });

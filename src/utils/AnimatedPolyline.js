@@ -16,7 +16,6 @@ export default class AnimatedPolyline extends Component {
 //     // if (nextProps.coordinates !== this.props.coordinates) {
 //     //   this._animate(nextProps.coordinates);
 //     // }
-//     console.log()
 //   return null;
 //  }
   componentWillReceiveProps(nextProps) {

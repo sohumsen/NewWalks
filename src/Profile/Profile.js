@@ -80,14 +80,6 @@ export default class Profile extends Component {
     if (sortBy === "distance") {
       sortedMapData = mapData.sort((a, b) => {
         if (
-         ( parseFloat(
-            b.waypointsRoute.routeDistance[
-              b.waypointsRoute.routeDistance.substring(
-                0,
-                b.waypointsRoute.routeDistance.indexOf(" ")
-              )
-            ]
-          ) -
           parseFloat(
             b.waypointsRoute.routeDistance[
               b.waypointsRoute.routeDistance.substring(
@@ -95,9 +87,17 @@ export default class Profile extends Component {
                 b.waypointsRoute.routeDistance.indexOf(" ")
               )
             ]
-          ))>0
+          ) -
+            parseFloat(
+              b.waypointsRoute.routeDistance[
+                b.waypointsRoute.routeDistance.substring(
+                  0,
+                  b.waypointsRoute.routeDistance.indexOf(" ")
+                )
+              ]
+            ) >
+          0
         )
-          console.log("dhfsj");
       });
     } else if (sortBy === "time") {
       sortedMapData = mapData.sort(
@@ -122,38 +122,35 @@ export default class Profile extends Component {
       );
     }
 
-    console.log(sortedMapData);
   };
 
   render() {
-    console.log(this.state.mapData);
     return (
       <View
         style={{
-          width: "100%",
+          flex: 1,
+          backgroundColor: "#F5FCFF",
+          justifyContent: 'space-between'
+
           // height: Dimensions.get("window").height - 140,
         }}
       >
-        {this.state.mapData !== null ? (
-          <MapImages
-            mapData={this.state.mapData}
-            removeData={this.removeMap}
-            replayMap={this.replayMap}
-          />
-        ) : null}
-        <AdMobBanner
-          style={{
-            position: "absolute",
-            bottom: 0,
-          }}
-          bannerSize="smartBannerPortrait"
-          testDeviceID="EMULATOR"
-          adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
-          servePersonalizedAds // true or false
-          onDidFailToReceiveAdWithError={(e) => {
-            console.log(e);
-          }}
-        />
+        <View  style={{
+          flex: 1,
+          backgroundColor: "#F5FCFF",
+
+          // height: Dimensions.get("window").height - 140,
+        }}>
+          {this.state.mapData !== null ? (
+            <MapImages
+              mapData={this.state.mapData}
+              removeData={this.removeMap}
+              replayMap={this.replayMap}
+            />
+          ) : null}
+        </View>
+
+      
       </View>
     );
   }

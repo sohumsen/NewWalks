@@ -1,18 +1,14 @@
 add splash screen
 make map view around points properly
-
-get more api keys
 set up app id
 set up permissions
-change all api costs to new card
 limit api requests
 disable watch user
-remove console logs
 map changes colour
-cant save map
-download all images to local
-get a truck gif
 ad on profile absolute position
+disable watch position button
+change google admob config
+CLEAN ASSETS FOLDER AND CACHE
 
 future
 ========

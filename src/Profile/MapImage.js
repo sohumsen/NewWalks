@@ -22,10 +22,8 @@ import Tile from "./Tile";
 export default class CardImageExample extends Component {
   render() {
     const date = Object.keys(this.props.mapObj)[0];
-    console.log(date);
     const [first, second] = date.split(",");
 
-    console.log(first, second);
     return (
       <Card>
         <CardItem
@@ -77,8 +75,8 @@ export default class CardImageExample extends Component {
                 "transportMode"
               ] === "truck" ? (
                 <Image
-                  source={require("../../assets/truck.png")}
-                  style={{ width: "100%", height: 30 }}
+                  source={require("../../assets/truck_driving.gif")}
+                  style={{ width: "100%", height: 40 }}
                 />
               ) : null}
             </View>
