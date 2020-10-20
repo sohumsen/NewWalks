@@ -31,6 +31,7 @@ export default class PickerWithIcon extends Component {
         type: "danger",
       });
     } else {
+      this.setState({showAd:true})
       this.props.onChangeNumberOfRequstsByUser(
         this.props.numberOfRequstsByUser + 1
       );
@@ -48,16 +49,17 @@ export default class PickerWithIcon extends Component {
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
-          margin: 10,
+          margin: 15,
         }}
       >
-        <Item picker style={{ margin: 20 }}>
+        <Item picker style={{ padding: 20 }}>
           <Label
             style={{
               color: "grey",
+              fontStyle: "italic",
             }}
           >
-            Range type
+            Range type:
           </Label>
 
           <Picker
@@ -73,13 +75,14 @@ export default class PickerWithIcon extends Component {
             <Picker.Item label="Distance (m)" value="distance" />
           </Picker>
         </Item>
-        <Item picker style={{ margin: 20 }}>
+        <Item picker style={{ padding: 20 }}>
           <Label
             style={{
               color: "grey",
+              fontStyle: "italic",
             }}
           >
-            Transport
+            Transport:
           </Label>
 
           <Picker
@@ -96,13 +99,14 @@ export default class PickerWithIcon extends Component {
             <Picker.Item label="Truck" value="truck" />
           </Picker>
         </Item>
-        <Item style={{ margin: 20, width: "50%" }}>
+        <Item style={{ padding: 20, width: "80%" }}>
           <Label
             style={{
               color: "grey",
+              fontStyle: "italic",
             }}
           >
-            Magnitude
+            {this.props.rangeType === "distance" ? "Distance (m):" : "Time (s)"}
           </Label>
 
           <Input
@@ -116,7 +120,7 @@ export default class PickerWithIcon extends Component {
 
         <View
           style={{
-            padding: 10,
+            padding: 20,
           }}
         >
           <Button
@@ -133,7 +137,7 @@ export default class PickerWithIcon extends Component {
             <Icon name="arrow-forward" />
           </Button>
 
-          {this.props.numberOfRequstsByUser > MAX_NUMBER_OF_FREE_REQUESTS ? (
+          {(this.props.numberOfRequstsByUser > MAX_NUMBER_OF_FREE_REQUESTS &&this.state.showAd)? (
             <Ad onAdClose={this.props.submitSettings} />
           ) : null}
         </View>

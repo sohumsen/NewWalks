@@ -16,7 +16,6 @@ import {
 } from "native-base";
 import MapImages from "./MapImages";
 import { AsyncStorage, Dimensions, View } from "react-native";
-import { AdMobBanner } from "expo-ads-admob";
 export default class Profile extends Component {
   state = {
     showNavigate: false,
@@ -36,7 +35,12 @@ export default class Profile extends Component {
       });
       this.setState({ mapData: data });
     } catch (error) {
-      console.error(error);
+      Toast.show({
+        text: "Oops, something went wrong",
+        buttonText: "Okay",
+        type: "danger",
+      });
+      
     }
   };
 
@@ -73,74 +77,67 @@ export default class Profile extends Component {
     this.props.setNewMap(mapData[idx][key]);
   };
 
-  sortMapList = (sortBy) => {
-    let mapData = [...this.state.mapData];
-    let sortedMapData = [];
+  // sortMapList = (sortBy) => {
+  //   let mapData = [...this.state.mapData];
+  //   let sortedMapData = [];
 
-    if (sortBy === "distance") {
-      sortedMapData = mapData.sort((a, b) => {
-        if (
-          parseFloat(
-            b.waypointsRoute.routeDistance[
-              b.waypointsRoute.routeDistance.substring(
-                0,
-                b.waypointsRoute.routeDistance.indexOf(" ")
-              )
-            ]
-          ) -
-            parseFloat(
-              b.waypointsRoute.routeDistance[
-                b.waypointsRoute.routeDistance.substring(
-                  0,
-                  b.waypointsRoute.routeDistance.indexOf(" ")
-                )
-              ]
-            ) >
-          0
-        )
-      });
-    } else if (sortBy === "time") {
-      sortedMapData = mapData.sort(
-        (a, b) =>
-          b.waypointsRoute.routeDuration - a.waypointsRoute.routeDuration
-      );
-    } else if (sortBy === "radius") {
-      sortedMapData = mapData.sort(
-        (a, b) => b.isoline.radiusMagnitude - a.isoline.radiusMagnitude
-      );
-    } else if (sortBy === "transport") {
-      sortedMapData = mapData.sort(
-        (a, b) => b.isoline.transportMode - a.isoline.transportMode
-      );
-    } else if (sortBy === "rangeType") {
-      sortedMapData = mapData.sort(
-        (a, b) => b.isoline.rangeType - a.isoline.rangeType
-      );
-    } else if (sortBy === "date") {
-      sortedMapData = mapData.sort(
-        (a, b) => b.isoline.rangeType - a.isoline.rangeType
-      );
-    }
+  //   if (sortBy === "distance") {
+  //     sortedMapData = mapData.sort((a, b) => {
+  //       if (
+  //         parseFloat(
+  //           b.waypointsRoute.routeDistance[
+  //             b.waypointsRoute.routeDistance.substring(
+  //               0,
+  //               b.waypointsRoute.routeDistance.indexOf(" ")
+  //             )
+  //           ]
+  //         ) -
+  //           parseFloat(
+  //             b.waypointsRoute.routeDistance[
+  //               b.waypointsRoute.routeDistance.substring(
+  //                 0,
+  //                 b.waypointsRoute.routeDistance.indexOf(" ")
+  //               )
+  //             ]
+  //           ) >
+  //         0
+  //       )
+  //     });
+  //   } else if (sortBy === "time") {
+  //     sortedMapData = mapData.sort(
+  //       (a, b) =>
+  //         b.waypointsRoute.routeDuration - a.waypointsRoute.routeDuration
+  //     );
+  //   } else if (sortBy === "radius") {
+  //     sortedMapData = mapData.sort(
+  //       (a, b) => b.isoline.radiusMagnitude - a.isoline.radiusMagnitude
+  //     );
+  //   } else if (sortBy === "transport") {
+  //     sortedMapData = mapData.sort(
+  //       (a, b) => b.isoline.transportMode - a.isoline.transportMode
+  //     );
+  //   } else if (sortBy === "rangeType") {
+  //     sortedMapData = mapData.sort(
+  //       (a, b) => b.isoline.rangeType - a.isoline.rangeType
+  //     );
+  //   } else if (sortBy === "date") {
+  //     sortedMapData = mapData.sort(
+  //       (a, b) => b.isoline.rangeType - a.isoline.rangeType
+  //     );
+  //   }
 
-  };
+  // };
 
   render() {
     return (
       <View
         style={{
-          flex: 1,
           backgroundColor: "#F5FCFF",
-          justifyContent: 'space-between'
 
           // height: Dimensions.get("window").height - 140,
         }}
       >
-        <View  style={{
-          flex: 1,
-          backgroundColor: "#F5FCFF",
-
-          // height: Dimensions.get("window").height - 140,
-        }}>
+      
           {this.state.mapData !== null ? (
             <MapImages
               mapData={this.state.mapData}
@@ -148,7 +145,6 @@ export default class Profile extends Component {
               replayMap={this.replayMap}
             />
           ) : null}
-        </View>
 
       
       </View>

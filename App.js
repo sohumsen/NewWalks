@@ -1,5 +1,5 @@
 import React from "react";
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from "expo-splash-screen";
 
 import { AppLoading } from "expo";
 import { Container, Toast } from "native-base";
@@ -175,13 +175,16 @@ export default class App extends React.Component {
     try {
       await SplashScreen.preventAutoHideAsync();
     } catch (e) {
-      console.warn(e);
+      Toast.show({
+        text: "Oops, something went wrong",
+        buttonText: "Okay",
+        type: "danger",
+      });
     }
 
-    this.wait()
-    // this.getCurrentLocation();
+    // this.wait()
+    this.getCurrentLocation();
 
-  
     // this.watchForLocationChanges();
 
     // this.watchForLocationChanges();
@@ -193,14 +196,15 @@ export default class App extends React.Component {
     });
     this.setState({ isReady: true });
   }
-  wait=()=>{
+  wait = () => {
     setTimeout(
-      () => this.setState({ isoline: {} },async () => {
-        await SplashScreen.hideAsync();
-      }), 
+      () =>
+        this.setState({ isoline: {} }, async () => {
+          await SplashScreen.hideAsync();
+        }),
       3000
     );
-  }
+  };
 
   getIsoline = () => {
     let origin =
@@ -338,7 +342,9 @@ export default class App extends React.Component {
         searchDistance = radiusMagnitude * DRIVING_SPEED;
       }
     }
-    let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
+    let API_CHOICE = Math.floor(Math.random() * 2)
+      ? SOHUM_API_KEY
+      : UNIVARZ_API_KEY;
     let queryParams =
       "location=" +
       this.state.initialRegion.latitude +
@@ -347,7 +353,7 @@ export default class App extends React.Component {
       "&radius=" +
       searchDistance +
       "&opennow&key=" +
-      api_choice;
+      API_CHOICE;
 
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
@@ -432,10 +438,8 @@ export default class App extends React.Component {
 
         let { maxLat, minLat } = getBounds(newdata);
 
-
         initialRegion.latitudeDelta = deltaGenerate(newdata).latitudeDelta;
-        initialRegion.longitudeDelta =
-        deltaGenerate(newdata).longitudeDelta;
+        initialRegion.longitudeDelta = deltaGenerate(newdata).longitudeDelta;
 
         nearbyPlaces.chosenNearbyPlaces = newdata;
         this.setState(
@@ -481,14 +485,16 @@ export default class App extends React.Component {
       "&waypoints=" +
       this.state.nearbyPlaces.chosenNearbyPlaces
         .map((latLingObj, i) => {
-          if (i === this.state.nearbyPlaces.chosenNearbyPlaces.length-1) {
+          if (i === this.state.nearbyPlaces.chosenNearbyPlaces.length - 1) {
             return latLingObj.lat + "%2C" + latLingObj.lng;
           } else {
             return latLingObj.lat + "%2C" + latLingObj.lng + "%7Cvia:";
           }
         })
         .join("");
-        let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
+    let API_CHOICE = Math.floor(Math.random() * 2)
+      ? SOHUM_API_KEY
+      : UNIVARZ_API_KEY;
 
     fetch(
       "https://maps.googleapis.com/maps/api/directions/json?" +
@@ -497,7 +503,7 @@ export default class App extends React.Component {
         waypoints +
         transportMode +
         "&key=" +
-        api_choice
+        API_CHOICE
     )
       .then((response) => {
         if (response.status !== 200) {
@@ -536,12 +542,15 @@ export default class App extends React.Component {
           waypointsRoute.routeDuration = data.routes[0].legs[0].duration.text;
           waypointsRoute.routeDistance = data.routes[0].legs[0].distance.text;
 
-          this.setState({
-            waypointsRoute: waypointsRoute,
-            isReady: true 
-          },async () => {
-            await SplashScreen.hideAsync();
-          });
+          this.setState(
+            {
+              waypointsRoute: waypointsRoute,
+              isReady: true,
+            },
+            async () => {
+              await SplashScreen.hideAsync();
+            }
+          );
         });
       })
       .catch((err) => {
@@ -855,7 +864,7 @@ export default class App extends React.Component {
     // var directions = new GDirections ();
 
     if (!this.state.isReady) {
-      return null
+      return null;
     }
 
     // const Map =()=> (

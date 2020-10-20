@@ -1,17 +1,12 @@
-add splash screen
-make map view around points properly
-set up app id
-set up permissions
-limit api requests
-disable watch user
-map changes colour
-ad on profile absolute position
-disable watch position button
-change google admob config
-CLEAN ASSETS FOLDER AND CACHE
 
+
+
+admob showing error
 future
 ========
+
+limit api requests
+
 utilise vehicle metrics possibly
 Maybe prevent route repititions
 search past maps

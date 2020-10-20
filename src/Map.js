@@ -27,6 +27,7 @@ import { Container, Header } from "native-base";
 import { AsyncStorage } from "react-native";
 import UserTrack from "./UI/UserTrack";
 import AnimatedPolyline from "./utils/AnimatedPolyline";
+import CustomPolygon from "./UI/Polygon";
 const WALKING_SPEED = 1.3; //m/s
 const DRIVING_SPEED = 7; //m/s
 class Map extends Component {
@@ -53,7 +54,6 @@ class Map extends Component {
             <MapView
               showsUserLocation
               followsUserLocation
-              // onUserLocationChange={event => console.log(event.nativeEvent)}
 
               style={styles.mapStyle}
               provider={PROVIDER_GOOGLE}
@@ -71,11 +71,18 @@ class Map extends Component {
                     />
                   ))
                 : null}
-              <Polygon
+              {/* <Polygon
                 coordinates={this.props.isoline.decodedIsoline}
                 strokeColor="blue" // fallback for when `strokeColors` is not supported by the map-provider
                 strokeWidth={2}
-                fillColor="rgba(45,87,250,0.08)"
+                // fillColor="rgba(45,87,250,0.08)"
+              /> */}
+              <CustomPolygon
+              
+              coordinates={this.props.isoline.decodedIsoline}
+              strokeColor="blue" // fallback for when `strokeColors` is not supported by the map-provider
+              strokeWidth={2}
+              fillColor="rgba(45,87,250,0.08)"
               />
               {this.props.userTrack.routeCoordinates.length !== 0 ? (
                 <Polyline
@@ -128,7 +135,9 @@ class Map extends Component {
             <View
               style={{
                 position: "absolute", //use absolute position to show button on top of the map
-                top: "0%", //for center align
+                top: "1%", //for center align
+                left: "1%", //for center align
+
               }}
             >
               <Fab
@@ -138,13 +147,12 @@ class Map extends Component {
               />
             </View>
 
-            {this.props.trackingUserBool ? (
+            {/* {this.props.trackingUserBool ? (
               <View
                 style={{
                   position: "absolute",
                   top: "0%",
-                  left: "70%",
-                  zIndex: 10,
+                  left: "100%",
                 }}
               >
                 <UserTrack
@@ -152,7 +160,7 @@ class Map extends Component {
                   timeTaken={this.props.userTrack.timeTaken}
                 />
               </View>
-            ) : null}
+            ) : null} */}
             {/* 
             <Card
               style={{
@@ -172,7 +180,7 @@ class Map extends Component {
               style={{
                 position: "absolute",
                 top: "0%",
-                right: "45%",
+                right: "40%",
               }}
             >
               <Text>
@@ -186,7 +194,7 @@ class Map extends Component {
               style={{
                 position: "absolute",
                 top: "0%",
-                right: "5%",
+                right: "1%",
               }}
             >
               <Text>

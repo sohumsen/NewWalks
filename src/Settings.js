@@ -24,7 +24,7 @@ import {
   AdMobRewarded,
   setTestDeviceIDAsync,
 } from "expo-ads-admob";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Platform } from "react-native";
 import Ad from "./UI/Ad";
 
 export default class ListIconExample extends Component {
@@ -80,9 +80,14 @@ export default class ListIconExample extends Component {
 
         <AdMobBanner
           style={styles.bottomBanner}
-          bannerSize="smartBannerPortrait"
-          testDeviceID="EMULATOR"
-          adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+          // bannerSize="smartBannerPortrait"
+          // testDeviceID="EMULATOR"
+          // adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+          adUnitID={
+            Platform.OS === "ios"
+              ? "ca-app-pub-3651117412361356/4549455260"
+              : "ca-app-pub-3651117412361356/2607125111"
+          } // Test ID, Replace with your-admob-unit-id
           servePersonalizedAds // true or false
           onDidFailToReceiveAdWithError={(e) => {
             Toast.show({

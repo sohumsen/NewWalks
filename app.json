@@ -5,9 +5,9 @@
     "slug": "Xplore",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Xplore_icon.png",
+    "icon": "./assets/new_xplore_icon.png",
     "splash": {
-      "image": "./assets/splash_screen.png",
+      "image": "./assets/splash_screen.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,8 +19,9 @@
     ],
     "android": {
       "config": {
-        "googleMobileAdsAppId": "ca-app-pub-3651117412361356~1507842038"
-      }
+        "googleMobileAdsAppId": "ca-app-pub-3651117412361356~9048232776"
+      },
+      "permissions":["ACCESS_FINE_LOCATION","ACCESS_COARSE_LOCATION"]
     },
     "ios": {
       "supportsTablet": true,
@@ -35,7 +36,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/new_xplore_icon.png"
     }
   }
 }

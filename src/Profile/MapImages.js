@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { AsyncStorage, Image, ScrollView } from "react-native";
-import { List, View } from "native-base";
+import { AsyncStorage, Image, Platform, ScrollView,View } from "react-native";
+import { List, Toast } from "native-base";
 import MapImage from "./MapImage";
 import { Card, CardItem, Body, Text, Content } from "native-base";
 import { AdMobBanner } from "expo-ads-admob";
@@ -10,20 +10,9 @@ export default class CardImageExample extends Component {
     return (
       <List>
         {this.props.mapData.length !== 0 ? (
-        //    <AdMobBanner
-        //    style={{
-        //      position: "absolute",
-        //      bottom:0
-        //    }}
-        //    bannerSize="smartBannerPortrait"
-        //    testDeviceID="EMULATOR"
-        //    adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
-        //    servePersonalizedAds // true or false
-        //    onDidFailToReceiveAdWithError={(e) => {
-        //      console.log(e);
-        //    }}
-        //  />
-          this.props.mapData.map((mapObj, i) => {
+          <View>
+         
+         { this.props.mapData.map((mapObj, i) => {
             return (
               <MapImage
                 key={i}
@@ -32,7 +21,30 @@ export default class CardImageExample extends Component {
                 replayMap={this.props.replayMap}
               />
             );
-          })
+          })}
+            <AdMobBanner
+          //  style={{
+          //    position: "relative",
+          //    top:0
+          //  }}
+          //  bannerSize="smartBannerPortrait"
+          //  testDeviceID="EMULATOR"
+          // adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+          adUnitID={
+            Platform.OS === "ios"
+              ? "ca-app-pub-3651117412361356/7079108195"
+              : "ca-app-pub-3651117412361356/1310177703"
+          } // Test ID, Replace with your-admob-unit-id
+           servePersonalizedAds // true or false
+           onDidFailToReceiveAdWithError={(e) => {
+            Toast.show({
+              text: "Oops, something went wrong",
+              buttonText: "Okay",
+              type: "danger",
+            });
+           }}
+         />
+          </View>
         )
        
         
@@ -51,10 +63,10 @@ export default class CardImageExample extends Component {
             <Image
               source={require("../../assets/map_walking.gif")}
               style={{
-                position: "relative",
-                left: "20%",
-                width: "60%",
-                height: "60%",
+                position:"relative",
+                top:"50%",
+                width: "100%",
+                height: "100%",
               }}
             />
            

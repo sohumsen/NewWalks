@@ -11,6 +11,7 @@ export default class FABExample extends Component {
     return (
       <View>
         <Button
+        rounded 
           onPress={() => {
             this.setState({ active: !this.state.active });
           }}
@@ -22,23 +23,25 @@ export default class FABExample extends Component {
         {this.state.active ? (
           <View>
             <Button
+            rounded 
               onPress={() => this.props.saveMap()}
-              style={{ margin: 2, backgroundColor: "brown" }}
+              style={{ margin: 2, backgroundColor: "green" }}
             >
               <Icon name="save" />
             </Button>
             <Button
-              style={{ margin: 2, backgroundColor: "purple" }}
+            rounded 
+              style={{ margin: 2, backgroundColor: "red" }}
               onPress={() => this.props.getChosenNearbyPlaces()}
             >
               <Icon name="create" />
             </Button>
-            <Button
+            {/* <Button
               style={{ margin: 2, backgroundColor: "green" }}
               onPress={() => this.props.watchForLocationChanges()}
             >
               <Icon name="ios-arrow-dropright" />
-            </Button>
+            </Button> */}
           </View>
         ) : null}
       </View>

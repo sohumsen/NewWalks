@@ -13,14 +13,16 @@ export default class Tile extends Component {
   }
 
   getImagePath = () => {
-    let api_choice=Math.floor(Math.random() * 2)? SOHUM_API_KEY:UNIVARZ_API_KEY
+    let API_CHOICE = Math.floor(Math.random() * 2)
+      ? SOHUM_API_KEY
+      : UNIVARZ_API_KEY;
 
     let queryParams =
       "&path=enc:" +
       this.props.mapObj[Object.keys(this.props.mapObj)[0]].waypointsRoute
         .encodedPoints +
       "&key=" +
-      api_choice +
+      API_CHOICE +
       "&sensor=true";
 
     let url =
@@ -41,11 +43,6 @@ export default class Tile extends Component {
               style={{ width: 250, height: 200 }}
             />
           ),
-        });
-        Toast.show({
-          text: "Successful!",
-          buttonText: "Okay",
-          type: "success",
         });
       })
 
