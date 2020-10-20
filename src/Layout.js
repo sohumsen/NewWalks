@@ -43,6 +43,7 @@ export default class AnatomyExample extends Component {
         <Footer>
           <FooterTab>
             <Button
+              rounded
               vertical
               active={this.props.selectedFooterTab === "Settings"}
               onPress={() => {
@@ -53,6 +54,7 @@ export default class AnatomyExample extends Component {
               <Text>Settings</Text>
             </Button>
             <Button
+              rounded
               vertical
               active={this.props.selectedFooterTab === "Map"}
               onPress={() => {
@@ -63,6 +65,7 @@ export default class AnatomyExample extends Component {
               <Text>Navigate</Text>
             </Button>
             <Button
+              rounded
               vertical
               active={this.props.selectedFooterTab === "Profile"}
               onPress={() => {

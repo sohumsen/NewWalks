@@ -83,6 +83,8 @@ export default class ListIconExample extends Component {
           // bannerSize="smartBannerPortrait"
           // testDeviceID="EMULATOR"
           // adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+          // adUnitID="ca-app-pub-3651117412361356/4549455260" // Test ID, Replace with your-admob-unit-id
+
           adUnitID={
             Platform.OS === "ios"
               ? "ca-app-pub-3651117412361356/4549455260"
@@ -90,8 +92,9 @@ export default class ListIconExample extends Component {
           } // Test ID, Replace with your-admob-unit-id
           servePersonalizedAds // true or false
           onDidFailToReceiveAdWithError={(e) => {
+            console.log(e);
             Toast.show({
-              text: "Oops, something went wrong",
+              text: e,
               buttonText: "Okay",
               type: "danger",
             });

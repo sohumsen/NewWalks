@@ -179,7 +179,7 @@ class Map extends Component {
             <View
               style={{
                 position: "absolute",
-                top: "0%",
+                top: "2%",
                 right: "40%",
               }}
             >
@@ -193,8 +193,8 @@ class Map extends Component {
             <View
               style={{
                 position: "absolute",
-                top: "0%",
-                right: "1%",
+                top: "2%",
+                right: "5%",
               }}
             >
               <Text>

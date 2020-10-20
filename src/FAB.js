@@ -11,11 +11,18 @@ export default class FABExample extends Component {
     return (
       <View>
         <Button
-        rounded 
           onPress={() => {
             this.setState({ active: !this.state.active });
           }}
-          style={{ margin: 2 }}
+          style={{
+            borderWidth: 1,
+            borderColor: "rgba(0,0,0,0.2)",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+          }}
         >
           <Icon name="open" />
         </Button>
@@ -23,15 +30,33 @@ export default class FABExample extends Component {
         {this.state.active ? (
           <View>
             <Button
-            rounded 
               onPress={() => this.props.saveMap()}
-              style={{ margin: 2, backgroundColor: "green" }}
+              style={{
+                marginTop: 5,
+                borderWidth: 1,
+                borderColor: "rgba(0,0,0,0.2)",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: "green",
+              }}
             >
               <Icon name="save" />
             </Button>
             <Button
-            rounded 
-              style={{ margin: 2, backgroundColor: "red" }}
+              style={{
+                marginTop: 5,
+                borderWidth: 1,
+                borderColor: "rgba(0,0,0,0.2)",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: "red",
+              }}
               onPress={() => this.props.getChosenNearbyPlaces()}
             >
               <Icon name="create" />
