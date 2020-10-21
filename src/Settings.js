@@ -93,11 +93,11 @@ export default class ListIconExample extends Component {
           servePersonalizedAds // true or false
           onDidFailToReceiveAdWithError={(e) => {
             console.log(e);
-            Toast.show({
-              text: e,
-              buttonText: "Okay",
-              type: "danger",
-            });
+            // Toast.show({
+            //   text: e,
+            //   buttonText: "Okay",
+            //   type: "danger",
+            // });
           }}
         />
         {/* <Ad/> */}

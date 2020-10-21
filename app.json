@@ -18,6 +18,9 @@
       "**/*"
     ],
     "android": {
+      "versionCode": 1,
+      "package": "com.univarz.xplore",
+
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-3651117412361356~9048232776"
       },
@@ -26,6 +29,8 @@
     "ios": {
       "supportsTablet": true,
       "loadJSInBackgroundExperimental": true,
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.univarz.xplore",
 
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "App would like to access your current location to determine nearby places",

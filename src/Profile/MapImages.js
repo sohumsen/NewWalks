@@ -37,11 +37,12 @@ export default class CardImageExample extends Component {
           } // Test ID, Replace with your-admob-unit-id
            servePersonalizedAds // true or false
            onDidFailToReceiveAdWithError={(e) => {
-            Toast.show({
-              text: "Oops, something went wrong",
-              buttonText: "Okay",
-              type: "danger",
-            });
+             console.log(e)
+            // Toast.show({
+            //   text: "Oops, something went wrong",
+            //   buttonText: "Okay",
+            //   type: "danger",
+            // });
            }}
          />
           </View>

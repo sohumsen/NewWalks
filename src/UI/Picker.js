@@ -16,7 +16,7 @@ import {
 import { View } from "react-native";
 import Ad from "./Ad";
 
-const MAX_NUMBER_OF_FREE_REQUESTS = 1;
+const MAX_NUMBER_OF_FREE_REQUESTS = 3;
 const MAX_DISTANCE_TO_SEARCH = 20000;
 
 export default class PickerWithIcon extends Component {

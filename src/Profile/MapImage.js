@@ -23,6 +23,7 @@ export default class CardImageExample extends Component {
   render() {
     const date = Object.keys(this.props.mapObj)[0];
     const [first, second] = date.split(",");
+    let second2 = second.replace(/\s/g, '');
 
     return (
       <Card>
@@ -116,7 +117,7 @@ export default class CardImageExample extends Component {
                 fontSize: 15,
               }}
             >
-              {second}
+              {second2}
             </Text>
             <Button
                   transparent
