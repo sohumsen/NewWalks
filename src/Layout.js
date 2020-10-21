@@ -49,6 +49,9 @@ export default class AnatomyExample extends Component {
               onPress={() => {
                 this.props.handleChangeFooterTab("Settings");
               }}
+              style={{
+                margin: 8,
+              }}
             >
               <Icon name="settings" />
               <Text>Settings</Text>
@@ -60,8 +63,14 @@ export default class AnatomyExample extends Component {
               onPress={() => {
                 this.props.handleChangeFooterTab("Map");
               }}
+              style={{
+                margin: 8,
+              }}
             >
-              <Icon name="navigate" />
+              <Icon
+                name="navigate"
+              
+              />
               <Text>Navigate</Text>
             </Button>
             <Button
@@ -70,6 +79,9 @@ export default class AnatomyExample extends Component {
               active={this.props.selectedFooterTab === "Profile"}
               onPress={() => {
                 this.props.handleChangeFooterTab("Profile");
+              }}
+              style={{
+                margin: 8,
               }}
             >
               <Icon active name="person" />

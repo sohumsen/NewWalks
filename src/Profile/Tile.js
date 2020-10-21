@@ -40,7 +40,7 @@ export default class Tile extends Component {
               source={{
                 uri: url,
               }}
-              style={{ width: 250, height: 200 }}
+              style={{ width: 250, height: 200, borderRadius:20 }}
             />
           ),
         });

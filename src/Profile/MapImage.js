@@ -48,6 +48,7 @@ export default class CardImageExample extends Component {
               borderWidth: 1,
               height: "100%",
               padding:4,
+              marginLeft:7
               // backgroundColor:"green"
 
             }}
